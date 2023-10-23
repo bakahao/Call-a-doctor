@@ -1,5 +1,6 @@
 from flet import *
 import flet as ft
+import os
 
 def patient_home_page(page:ft.Page):
     page.title = "Patient Home Page"
@@ -46,42 +47,42 @@ def patient_home_page(page:ft.Page):
                             icon_color="BLACK")
     )
 
-    clinic_list_container = ft.Container(
+    clinic_list_button = ft.Container(
         width=150,
         height=150,
         margin=margin.symmetric(vertical=150, horizontal=20),
-    )
-    
-    clinic_list_text = ft.Container(
+        content=ft.ElevatedButton(
         width=150,
-        height=40,
-        margin=margin.symmetric(vertical=250, horizontal=20),
-        content=ft.Text("Clinic List",
-                        text_align="CENTER",
-                        size=24,
-                        style=ft.TextThemeStyle.TITLE_MEDIUM,
-                        color="BLACK"
-                        )
-    )
-    
-    clinic_list_image = ft.Container(
+        height=150,
+        style=ft.ButtonStyle(
+                shape=ft.RoundedRectangleBorder(radius=10),
+                bgcolor="#FFD0D0"
+            ),
+        content=ft.Column([
+            ft.Container(
             width=100,
             height=100,
-            margin=margin.symmetric(vertical=155, horizontal=45),
-            content=ft.Image(
-                src="Call-a-doctor/Activity/assets/images/clinic.png",
-                width=50,
-                height=50
-            ) 
+            content=ft.Image(src="Call-a-doctor/Activity/assets/images/clinic.png",
+            width=100,
+            height=100,
+                ),
+            ),
+            ft.Container(
+                width=150,
+                height=30,
+                content=ft.Text("Clinic List", color="Black", size=20, style=ft.TextThemeStyle.TITLE_MEDIUM,text_align="CENTER")
+            )
+        ])
+        
         )
+    )
+   
 
     stack = ft.Stack([big_container,
                       title_container,
                       title_text_container,
                       exit_button_container,
-                      clinic_list_container,
-                      clinic_list_image,
-                      clinic_list_text
+                      clinic_list_button
                       ])
 
     page.add(stack)
