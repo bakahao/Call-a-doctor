@@ -1,12 +1,13 @@
-from flet import *
-from patient_home import topbar
 
-def main(page: Page):
-    BG = '#3CDAB4'
-    page.padding = 0
-    page.spacing = 0
-    page.add(
-        topbar
-    )
+import flet as ft
+from login_page import login_page
+from signUp_page import signUp_page
 
-app(target=main)
+def main(page:ft.Page):
+    login_page(page)
+    
+    
+
+if __name__ == '__main__':
+    ft.app(target=main)
+
