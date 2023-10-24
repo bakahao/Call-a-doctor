@@ -1,13 +1,19 @@
+import flet 
+from flet import *
+import os
+from flet_route import Routing, path
+from login_page import LoginPage
+from signUp_page import SignUpPage
 
-import flet as ft
-from login_page import login_page
-from signUp_page import signUp_page
-
-def main(page:ft.Page):
-    login_page(page)
+def main(page: Page):
     
-    
+    app_routes = [
+        path(url="/", clear=True, view=LoginPage().view),
+        path(url="/signUp", clear=True, view=SignUpPage().view),
+    ]
 
-if __name__ == '__main__':
-    ft.app(target=main)
+    Routing(page=page, app_routes=app_routes)
+    page.go(page.route)
 
+if __name__ == "__main__":
+    flet.app(target=main)
