@@ -62,16 +62,11 @@ class LoginPage:
             content=TextField(label="Enter Password", password=True, can_reveal_password=True, color="BLACK")
         )
 
-        def SignIn_button_clicked(e):
-            print((os.getcwd()+"/Activity/assets/images/logo.png"))
-            page.update()
-
-        
         SignIn_button = Container(
             width=200,
             height=40,
             margin=margin.symmetric(vertical=480, horizontal=100),
-            content= ElevatedButton("Sign In", on_click=SignIn_button_clicked, bgcolor="#3CDAB4", color="BLACK")
+            content= ElevatedButton("Sign In", on_click=lambda _:page.go("/PatientHomePage"), bgcolor="#3CDAB4", color="BLACK")
         )
         
         SignUp_button = Container(
