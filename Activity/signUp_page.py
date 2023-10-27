@@ -72,6 +72,15 @@ class SignUpPage:
             content= ElevatedButton("Sign Up", on_click=SignUp_button_clicked, bgcolor="#3CDAB4", color="BLACK")
         )
 
+        exit_button_container = Container(
+                width=40,
+                height=40,
+                margin=margin.symmetric(vertical=35, horizontal=10),
+                content=IconButton(
+                                    icons.EXIT_TO_APP_ROUNDED,
+                                    icon_color="BLACK",
+                                    on_click=lambda _:page.go("/"))
+            )
 
 
         stack = Stack([big_container,
@@ -80,7 +89,8 @@ class SignUpPage:
                         emailTextField_Container,
                         phoneTextField_Container,
                         passwordTextField_Container,
-                        SignUp_button])
+                        SignUp_button,
+                        exit_button_container])
         
         return View(
             "/signUp",

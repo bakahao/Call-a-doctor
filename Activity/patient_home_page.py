@@ -157,6 +157,7 @@ class PatientHomePage:
             content=ElevatedButton(
             width=150,
             height=150,
+            on_click=lambda _:page.go("/ChatList"),
             style=ButtonStyle(
                     shape=RoundedRectangleBorder(radius=10),
                     bgcolor="#B9F5FD"

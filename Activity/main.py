@@ -13,6 +13,8 @@ from doctor_list import DoctorDetails
 from feedback_page import FeedbackPage
 from rating_page import RatingPage
 from schedule_page import SchedulePage
+from chat_list import ChatList
+from chat_page import ChatPage
 
 def main(page: Page):
     
@@ -26,6 +28,8 @@ def main(page: Page):
         path(url="/FeedbackPage", clear=False, view=FeedbackPage().view),
         path(url="/RatingPage", clear=False, view=RatingPage().view),
         path(url="/SchedulePage", clear=False, view=SchedulePage().view),
+        path(url="/ChatList", clear=False, view=ChatList().view),
+        path(url="/ChatPage", clear=False, view=ChatPage().view),
     ]
 
     Routing(page=page, app_routes=app_routes)

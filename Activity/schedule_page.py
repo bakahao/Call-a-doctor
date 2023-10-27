@@ -324,14 +324,63 @@ class SchedulePage:
         )  
 
         cal_container = Container(
-            width=300,
-            height=300,
-            bgcolor="grey"
+            width=320,
+            height=450,
+            #bgcolor="grey",
+            margin=margin.only(top=110, left=30),
+            content=Column([
+                date,
+                Container(
+                    width=320,
+                    height=300,
+                    #wbgcolor="red",
+                    content=Column([
+                        Container(
+                            width=300,
+                            height=50,
+                            #bgcolor="blue",
+                            content=Text("Reminder", size=32, color="BLACK",
+                                         style=TextThemeStyle.TITLE_SMALL, weight="BOLD")
+                        ),
+                        Container(
+                            width=320,
+                            height=60,
+                            bgcolor="#AFF7E5",
+                            border_radius=30,
+                            content=Column([
+                                Container(
+                                    width=300,
+                                    #bgcolor="blue",
+                                    margin=margin.only(left=20,top=5),
+                                    content=Column([
+                                        Text("11 Nov 2023\n0800\nAppoinment with Dr. Yuh Choong", color="black", size=12, 
+                                            style=TextThemeStyle.TITLE_SMALL, weight="BOLD"),
+                                        
+                                            
+                                    ])
+                                )
+                            ])
+                        )
+                    ]
+                        
+                    )
+                )
+            ])
         )
+        exit_button_container = Container(
+                width=40,
+                height=40,
+                margin=margin.symmetric(vertical=35, horizontal=10),
+                content=IconButton(
+                                    icons.EXIT_TO_APP_ROUNDED,
+                                    icon_color="BLACK",
+                                    on_click=lambda _:page.go("/PatientHomePage"))
+            )
 
         stack = Stack([
             big_container,
-            date
+            cal_container,
+            exit_button_container,
         ])
 
         
