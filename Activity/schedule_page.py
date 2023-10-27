@@ -170,9 +170,6 @@ class DateSetUp(UserControl):
         self.next_btn = BTNPagination("Next", lambda e: cal_grid._change_month(1))
 
 
-
-
-
         self.today = Text(
             datetime.date.today().strftime("%B %d, %Y"),
             width=260,
@@ -289,7 +286,7 @@ class SchedulePage:
         page.window_width=400
         page.window_height=850
         page.window_resizable = False
-        page.title=("Feedback Page")
+        page.title=("Schedule Page")
 
         cal = SetCalendar()
         date = DateSetUp(cal)

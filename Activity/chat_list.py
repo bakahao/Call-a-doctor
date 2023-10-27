@@ -57,8 +57,20 @@ class ChatList:
                         bgcolor="#AFF7E5",
                         border_radius=30,
                         content=Container(
-                            content=ElevatedButton("Dr. Name", bgcolor="#AFF7E5", color="BLACK",
-                                                   on_click=lambda _:page.go("/ChatPage"))
+                            content=ElevatedButton(
+                                bgcolor="#AFF7E5",
+                                on_click=lambda _:page.go("/ChatPage"),
+                                content=Container(
+                                    width=400,
+                                    content=Row([
+                                        Icon(icons.ACCOUNT_CIRCLE_OUTLINED, color="BLACK"),
+                                        Text("Dr. Name", color="BLACK",),
+                                        
+                                    ]
+                                        
+                                        
+                                    )
+                            ))
                         )
 
                     )
