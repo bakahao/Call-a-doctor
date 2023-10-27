@@ -91,11 +91,12 @@ class PatientHomePage:
             height=150,
             margin=margin.only(left=200, top=150),
             content=ElevatedButton(
+            on_click= lambda _:page.go("/FeedbackPage"),
             width=150,
             height=150,
             style=ButtonStyle(
                     shape=RoundedRectangleBorder(radius=10),
-                    bgcolor="#C5F6BD"
+                    bgcolor="#C5F6BD",
                 ),
             content=Column([
                 Container(
@@ -122,6 +123,7 @@ class PatientHomePage:
             height=150,
             margin=margin.only(left=200, top=330),
             content=ElevatedButton(
+            on_click=lambda _:page.go("/SchedulePage"),
             width=150,
             height=150,
             style=ButtonStyle(

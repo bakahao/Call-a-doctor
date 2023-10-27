@@ -11,6 +11,7 @@ class ClinicDetails:
             page.window_width=400
             page.window_height=850
             page.window_resizable = False
+            page.title=("Clinic Details Page")
 
             """text = params.get("text")
             print(text)"""
@@ -59,19 +60,43 @@ class ClinicDetails:
                             )
                         ])
             )
+            def close_dlg(e):
+                dlg_modal.open = False
+                page.update()
+
+
+            dlg_modal = AlertDialog(
+                modal=True,
+                title=Text("Please confirm"),
+                content=Text("Are you sure you want to request a doctor from this clinic?"),
+                actions=[
+                    TextButton("Yes", on_click=close_dlg),
+                    TextButton("No", on_click=close_dlg),
+                ],
+                actions_alignment=MainAxisAlignment.END,
+                on_dismiss=lambda e: print("Modal dialog dismissed!"),
+            )
+            
+
+            def open_dlg_modal(e):
+                page.dialog = dlg_modal
+                dlg_modal.open = True
+                page.update()
 
             request_doctor_button = Column([
                  Container(
                     width=150,
                     height=30,
                     margin=margin.only(left=130, top=190),
-                    content=ElevatedButton("Request Doctor", color="BLACK", bgcolor="WHITE")
+                    content=ElevatedButton("Request Doctor", color="BLACK", bgcolor="WHITE",
+                                           on_click=open_dlg_modal)
                  ),
                  Container(
                     width=150,
                     height=30,
                     margin=margin.only(left=130),
-                    content=ElevatedButton("Doctor List", color="BLACK", bgcolor="WHITE")
+                    content=ElevatedButton("Doctor List", color="BLACK", bgcolor="WHITE",
+                                        on_click=lambda _:page.go("/DoctorDetails"))
                  )
             ])
             
@@ -107,6 +132,8 @@ class ClinicDetails:
                                         )
                 )
             
+            
+            
             review_big_container = Column([
                  Container(
                       width=345,
@@ -119,15 +146,25 @@ class ClinicDetails:
                       )
                       )
                  ),
+                 
             ])
 
             review_scroll_bar=Column(
-                spacing=10,
-                height=300,
-                width=345,
-                scroll=ScrollMode.HIDDEN,
-        )
-            
+                            spacing=15,
+                            height=300,
+                            width=345,
+                            scroll=ScrollMode.HIDDEN,
+                    )
+                 
+            for i in range(1, 21):
+                text = f"Review {i}"
+                review_scroll_bar.controls.append(ElevatedButton(text,  key=str(i), width=325, bgcolor="#AFF7E5", color='BLACK'))
+                            
+                        
+            review_small_container = Container(
+                    margin=margin.only(top=390, left=20),
+                    content=review_scroll_bar
+                 )
             
 
 
@@ -139,7 +176,7 @@ class ClinicDetails:
                         clinic_rating_text,
                         request_doctor_button,
                         review_big_container,
-                        
+                        review_small_container
                         ])
             
             return View(

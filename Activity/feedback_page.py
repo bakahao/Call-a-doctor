@@ -3,8 +3,7 @@ from flet import *
 from flet_route import Params, Basket
 import os
 
-
-class ClinicList:
+class FeedbackPage:
     def __init__(self):
         pass
 
@@ -13,7 +12,7 @@ class ClinicList:
         page.window_width=400
         page.window_height=850
         page.window_resizable = False
-        page.title=("Clinic List Page")
+        page.title=("Feedback Page")
 
         big_container = Container(
                 width=400,
@@ -33,7 +32,7 @@ class ClinicList:
                         ),
                         content=Container(
                                 margin=margin.only(top=30),
-                                content=Text("Clinic List",
+                                content=Text("Feedback",
                                 color="BLACK",
                                 size=32,
                                 text_align=("CENTER"),
@@ -41,37 +40,33 @@ class ClinicList:
                                 )
                             )
                         ),
-                        Container(
-                            width=350,
-                            height=300,
-                            margin=margin.symmetric(horizontal=10, vertical=10),
-                            content=Image(src=os.getcwd()+ "/Activity/assets/images/map.png",)
-                            
-                        ),
-                        
-                    ]   
-                )
-            )
-        cl = Column(
-            spacing=10,
-            height=250,
-            width=380,
-            scroll=ScrollMode.HIDDEN,
+                ])
         )
-            
-        for i in range(1, 21):
-            button_text=f"Clinic {i}"
-            cl.controls.append(ElevatedButton(button_text,  key=str(i), width=350, bgcolor="#AFF7E5", color="BLACK",
-                                              on_click=lambda _, text=button_text: handle_button_click(page, text)))
-            
-        def handle_button_click(page, button_text):
-            print(f"Button clicked with text: {button_text}")
-            #page.go("/ClinicDetails", button_text=button_text)
-            page.go("/ClinicDetails")
 
-        cl_container = Container(cl,
-                                margin=margin.symmetric(vertical=450, horizontal=10))
-        
+        small_container = Column([
+            Container(
+                width=330,
+                height=35,
+                #sbgcolor="blue",
+                margin=margin.only(top=120, left=30),
+                content=Text("Waiting for Review", size=24, color="BLACK", style=TextThemeStyle.TITLE_SMALL, weight="BOLD")),
+                Container(
+                    width=330,
+                    height=50,
+                    border_radius=20,
+                    margin=margin.only(left=20),
+                    content=ElevatedButton(bgcolor="#AFF7E5",
+                                           on_click=lambda _:page.go("/RatingPage"),
+                                           content=Container(
+                                            width=330,
+                                            height=50,
+                                            margin=margin.only(top=15),
+                                            content=Text("Clinic 1", text_align=(TextAlign.CENTER, TextAlign.LEFT), color="BLACK",
+                                                        )
+                                                     )
+                    )
+                )
+        ])
         exit_button_container = Container(
                 width=40,
                 height=40,
@@ -81,20 +76,16 @@ class ClinicList:
                                     icon_color="BLACK",
                                     on_click=lambda _:page.go("/PatientHomePage"))
             )
-        
-        stack = Stack([big_container,
-                    exit_button_container,
-                    cl_container
-                    ])
 
+
+        stack = Stack([
+                big_container,
+                exit_button_container,
+                small_container
+        ])
         return View(
-            "/ClinicList",
+            "/FeedbackPage",
             controls=[
                 stack
             ]
         )
-    
-    """ page.add(stack)
-        page.update()
-
-app(target=clinicList)"""

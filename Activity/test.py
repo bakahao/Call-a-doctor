@@ -1,23 +1,17 @@
 import flet as ft
 
 def main(page: ft.Page):
-    def on_column_scroll(e: ft.OnScrollEvent):
-        print(
-            f"Type: {e.event_type}, pixels: {e.pixels}, min_scroll_extent: {e.min_scroll_extent}, max_scroll_extent: {e.max_scroll_extent}"
-        )
+    def button_clicked(e):
+        t.value = f"Textboxes values are:  '{tb1.value}', '{tb2.value}', '{tb3.value}', '{tb4.value}', '{tb5.value}'."
+        page.update()
 
-    cl = ft.Column(
-        spacing=10,
-        height=200,
-        width=200,
-        scroll=ft.ScrollMode.ALWAYS,
-        on_scroll=on_column_scroll,
-    )
-    for i in range(0, 50):
-        cl.controls.append(ft.Text(f"Text line {i}", key=str(i)))
+    t = ft.Text()
+    tb1 = ft.TextField(label="Standard")
+    tb2 = ft.TextField(label="Disabled", disabled=True, value="First name")
+    tb3 = ft.TextField(label="Read-only", read_only=True, value="Last name")
+    tb4 = ft.TextField(label="With placeholder", hint_text="Please enter text here")
+    tb5 = ft.TextField(label="With an icon", icon=ft.icons.EMOJI_EMOTIONS)
+    b = ft.ElevatedButton(text="Submit", on_click=button_clicked)
+    page.add(tb1, tb2, tb3, tb4, tb5, b, t)
 
-    page.add(
-        ft.Container(cl, border=ft.border.all(1)),
-    )
-
-ft.app(main)
+ft.app(target=main)
