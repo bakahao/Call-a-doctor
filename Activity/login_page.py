@@ -55,6 +55,7 @@ class LoginPage:
             margin=margin.symmetric(vertical=350, horizontal= 10),
             content=TextField(label="Enter Email", color="BLACK")
         )
+        
         passwordTextField_Container = Container(
             width=380,
             height=60,
@@ -66,7 +67,7 @@ class LoginPage:
             width=200,
             height=40,
             margin=margin.symmetric(vertical=480, horizontal=100),
-            content= ElevatedButton("Sign In", on_click=lambda _:page.go("/PatientHomePage"), bgcolor="#3CDAB4", color="BLACK")
+            content= ElevatedButton("Sign In", on_click=lambda _:page.go("/DoctorHomePage"), bgcolor="#3CDAB4", color="BLACK")
         )
         
         SignUp_button = Container(
