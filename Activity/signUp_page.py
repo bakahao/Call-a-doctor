@@ -19,58 +19,78 @@ class SignUpPage:
             height=750,
             bgcolor="white",
             border_radius=20,
-        )
-
-        small_container = Container(
-            width=150,
-            height=150,
-            bgcolor="transparent",
-            margin=margin.symmetric(horizontal="110", vertical="50"),
-            content=Image(
-                src=(os.getcwd()+"/Activity/assets/images/logo.png"),
-                width=100,
-                height=100
+            content=Column([
+                Container(
+                    content=Column([
+                        Container(
+                            alignment=alignment.center,
+                            margin=margin.only(top=100),
+                            content=Image(
+                                src=(os.getcwd()+"/Activity/assets/images/logo.png"),
+                                width=150,
+                                height=150
+                            )
+                        ),
+                        Container(
+                            alignment=alignment.center,
+                            content=Text("Register as a patient",
+                                        color="BLACK",
+                                        style=TextThemeStyle.TITLE_MEDIUM,)
+                        )
+                    ])
+                ),
+                Container(
+                    content=Column([
+                        Container(
+                            content= 
+                                Column([
+                            Container(
+                                content=Column([
+                                    Container(
+                                        alignment=alignment.center,
+                                        content=Column([
+                                            Container(
+                                                margin=margin.symmetric(horizontal=10),
+                                                content=TextField(label="Enter Full Name (Same as IC)", color="BLACK")
+                                                ),
+                                                Container(
+                                                    Container(
+                                                        alignment=alignment.center,
+                                                        margin=margin.symmetric(horizontal= 10),
+                                                        content=TextField(label="Enter E-mail", color="BLACK")
+                                                    )
+                                                )
+                                            ])
+                                        ),
+                                        Container(
+                                            Container(
+                                                margin=margin.symmetric(horizontal= 10),
+                                                content=TextField(label="Enter phone number", color="BLACK")
+                                            )
+                                        )
+                                    ])
+                                ),
+                                Container(
+                                    margin=margin.symmetric(horizontal= 10),
+                                    content=TextField(label="Enter password", color="BLACK")
+                                )
+                            ])
+                        ),
+                        Container(
+                            alignment=alignment.center,
+                            margin=margin.only(top=10),
+                            content= ElevatedButton("Sign Up", bgcolor="#3CDAB4", color="BLACK", height=40)
+                        )
+                    ])
+                    )
+                ])
             )
-        )
+
 
         def SignUp_button_clicked(e):
             print("Sign Up clicked time(s)")
             page.update()
 
-        nameTextField_Container = Container(
-            width=380,
-            height=60,
-            margin=margin.symmetric(vertical=250, horizontal= 10),
-            content=TextField(label="Enter Full Name (Same as IC)", color="BLACK")
-        )
-
-        emailTextField_Container = Container(
-            width=380,
-            height=60,
-            margin=margin.symmetric(vertical=320, horizontal= 10),
-            content=TextField(label="Enter E-mail", color="BLACK")
-        )
-
-        phoneTextField_Container = Container(
-            width=380,
-            height=60,
-            margin=margin.symmetric(vertical=390, horizontal= 10),
-            content=TextField(label="Enter phone number", color="BLACK")
-        )
-
-        passwordTextField_Container = Container(
-            width=380,
-            height=60,
-            margin=margin.symmetric(vertical=460, horizontal= 10),
-            content=TextField(label="Enter password", color="BLACK")
-        )
-
-        SignUp_button = Container(
-            width=200,
-            height=40,
-            margin=margin.symmetric(vertical=530, horizontal=100),
-            content= ElevatedButton("Sign Up", on_click=SignUp_button_clicked, bgcolor="#3CDAB4", color="BLACK")
-        )
 
         exit_button_container = Container(
                 width=40,
@@ -84,12 +104,6 @@ class SignUpPage:
 
 
         stack = Stack([big_container,
-                        small_container,
-                        nameTextField_Container,
-                        emailTextField_Container,
-                        phoneTextField_Container,
-                        passwordTextField_Container,
-                        SignUp_button,
                         exit_button_container])
         
         return View(

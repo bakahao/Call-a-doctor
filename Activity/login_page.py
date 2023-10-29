@@ -2,6 +2,7 @@ import flet
 from flet import *
 from flet_route import Params, Basket
 import os
+import pyrebase
 
 class LoginPage:
     def __init__(self):
@@ -15,74 +16,91 @@ class LoginPage:
         
 
         #Text container
-        text_container = Container(
-            width=400,
-            height=60,
-            bgcolor="transparent",
-            margin=margin.symmetric(vertical=300),
-            content=Text(
-                "Welcome to Call a Doctor!",
-                style=TextThemeStyle.TITLE_MEDIUM,
-                size=20,
-                color=colors.BLACK,
-                text_align="CENTER"
-            )
-        )
-
-        #big container for the white background
         big_container = Container(
             width=400,
             height=750,
             bgcolor="white",
             border_radius=20,
-        )
+            content=Column([
+                        Container(
+                            content=Column([
+                                Container(
+                                    content=Column([
+                                        Container(
+                                            content=Column([
+                                                Container(
+                                                    margin=margin.only(top=130),
+                                                    alignment=alignment.center,
+                                                    content=Image(
+                                                        src=(os.getcwd()+"/Activity/assets/images/logo.png"),
+                                                        width=150,
+                                                        height=150,
+                                                    )
+                                                ),
+                                                Container(
+                                                    alignment=alignment.center,
+                                                    content=Text(
+                                                        "Welcome to Call a Doctor!",
+                                                        style=TextThemeStyle.TITLE_MEDIUM,
+                                                        size=20,
+                                                        color=colors.BLACK,
+                                                        text_align="CENTER"
+                                                    )
+                                                )
+                                            ])
+                                        ),
+                                        Container(
+                                            content=Column([
+                                                Container(
+                                                    margin=margin.symmetric(horizontal=10),
+                                                    alignment=alignment.center,
+                                                    content=TextField(label="Enter Email", color="BLACK")
+                                                ),
+                                            Container(
+                                                margin=margin.symmetric(horizontal= 10),
+                                                alignment=alignment.center,
+                                                content=TextField(label="Enter Password", password=True, can_reveal_password=True, color="BLACK")
+                                            )
+                                            ])
+                                            
+                                        )
+                                        
+                                    ])
+                                ),
+                                Container(
+                                    content=Column([
+                                        Container(
+                                            margin=margin.only(top=10),
+                                            alignment=alignment.center,
+                                            content= ElevatedButton("Sign In", bgcolor="#3CDAB4", color="BLACK",
+                                                                    width=100, height=40,on_click=lambda _:page.go("/PatientHomePage"))
+                                        ),
+                                        Container(
+                                            alignment=alignment.center,
+                                            content= ElevatedButton("Sign Up", bgcolor="#DA3C45", color="White",
+                                                                    width=100, height=40, on_click=lambda _:page.go("/signUp"))
+                                        )
+                                    ])
+                                )
+                            ])
+                                ),
+                                Container(
+                                    content=Column([
+                                        Container(
+                                            margin=margin.symmetric(vertical=20),
+                                            alignment=alignment.center,
+                                            content=Container(
+                                                    content=(TextButton("Switch to Clinic/Doctor View",on_click=lambda _:page.go("/ClinicLoginPage")))
+                                                )
+                                        )
+                                    ])
+                                )   
+                            ])
+                        )
 
-        # small container for the logo.png
-        small_container = Container(
-            width=150,
-            height=150,
-            margin=120,
-            content=Image(
-                src=(os.getcwd()+"/Activity/assets/images/logo.png"),
-                width=100,
-                height=100
-            )
-        )
-        
-        emailTextField_Container = Container(
-            width=380,
-            height=60,
-            margin=margin.symmetric(vertical=350, horizontal= 10),
-            content=TextField(label="Enter Email", color="BLACK")
-        )
-        passwordTextField_Container = Container(
-            width=380,
-            height=60,
-            margin=margin.symmetric(vertical=415, horizontal= 10),
-            content=TextField(label="Enter Password", password=True, can_reveal_password=True, color="BLACK")
-        )
-
-        SignIn_button = Container(
-            width=200,
-            height=40,
-            margin=margin.symmetric(vertical=480, horizontal=100),
-            content= ElevatedButton("Sign In", on_click=lambda _:page.go("/PatientHomePage"), bgcolor="#3CDAB4", color="BLACK")
-        )
-        
-        SignUp_button = Container(
-            width=200,
-            height=40,
-            margin=margin.symmetric(vertical=530, horizontal=100),
-            content= ElevatedButton("Sign Up", on_click=lambda _:page.go("/signUp"), bgcolor="#DA3C45", color="White")
-        )
 
         # 使用 Stack 包装大容器、文本元素和小容器，以正确的顺序
         stack = Stack([big_container, 
-                        small_container, 
-                        text_container,emailTextField_Container, 
-                        passwordTextField_Container, 
-                        SignIn_button,
-                        SignUp_button
                         ])
     
         return View(
