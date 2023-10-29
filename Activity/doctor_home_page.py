@@ -5,12 +5,47 @@ import os
 class DoctorHomePage:
     def __init__(self):
         pass
+    
+     
+
+    
 
     def view(self, page: Page, params: Params, basket: Basket):
         page.title = "Doctor Home Page"
         page.window_width = 400
         page.window_height = 850
         page.window_resizable = False
+
+    
+        self.dStatus = Icon(name=icons.CIRCLE_ROUNDED, color="White")
+
+        def onButtonClick(e):
+            if e.control.data == "Online":
+                self.dStatus = Icon(name=icons.CIRCLE_ROUNDED, color="Green" )
+                page.update()
+            elif e.control.data == "Busy":
+                self.dStatus = Icon(name=icons.CIRCLE_ROUNDED, color="Red")
+                page.update()
+                
+            
+            avatar_container.content = self.dStatus
+
+        avatar_container = Container(
+                width=40,
+                height=40,
+                margin=margin.only(top=35, left=300),
+
+                content = PopupMenuButton(
+                    content= self.dStatus,
+
+                    items=[
+                    PopupMenuItem(text="Status"),
+                    PopupMenuItem(content=ElevatedButton(text="Online",icon=icons.CIRCLE_ROUNDED, icon_color="Green",data="Online", on_click= onButtonClick),  ),
+                    PopupMenuItem(content=ElevatedButton(text="Busy",icon=icons.CIRCLE_ROUNDED, icon_color="Red",data="BUsy", on_click= onButtonClick ),  )
+                    ]
+            )
+            )
+       
 
         #big container for the white background
         big_container = Container(
@@ -128,7 +163,7 @@ class DoctorHomePage:
             content=ElevatedButton(
             width=150,
             height=150,
-            on_click=lambda _:page.go("/ChatPage"),
+            on_click=lambda _:page.go("/Chat"),
             style=ButtonStyle(
                     shape=RoundedRectangleBorder(radius=10),
                     bgcolor="#B9F5FD"
@@ -155,21 +190,7 @@ class DoctorHomePage:
             )
         )
 
-        avatar_container = Container(
-            width=40,
-            height=40,
-            margin=margin.only(top=35, left=300),
-
-            content = PopupMenuButton(
-                icon=icons.CIRCLE_ROUNDED,
-
-                items=[
-                PopupMenuItem(text="Status"),
-                PopupMenuItem(content=ElevatedButton(text="Online",icon=icons.CIRCLE_ROUNDED, icon_color="Green"),  ),
-                PopupMenuItem(content=ElevatedButton(text="Offline",icon=icons.CIRCLE_ROUNDED, icon_color="Red"),  )
-                ]
-        )
-        )
+        
 
         stack =Stack([big_container,
                         title_container,
@@ -195,3 +216,6 @@ class DoctorHomePage:
 if __name__ == '__main__':
     app(target=PatientHomePage().view)
     """
+        
+
+        

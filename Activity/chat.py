@@ -3,7 +3,7 @@ from flet_route import Params, Basket
 import os
 import flet as ft
 
-class ChatPage:
+class Chat:
     def __init__(self):
         pass
 
@@ -58,16 +58,23 @@ class ChatPage:
                                 on_click=lambda _:page.go("/DoctorHomePage"))
         )
 
-        chat_box_container =ElevatedButton(
+        chat_box_container =Container(
             left=9,
             top=120,
-            bgcolor="#AFF7E5",
-            content=ElevatedButton(
-                width=300,
-                icon= icons.ACCOUNT_CIRCLE_OUTLINED,
-                text="Foong Yuh Chung",
-                color="#AFF7E5",
-                on_click=lambda _:page.go("/DoctorHomePage")
+            margin=margin.only(left=20),
+                content=ElevatedButton(
+                    width=300,
+                    bgcolor="#AFF7E5",
+                    on_click=lambda _:page.go("/ChatPage"),
+                content=Container(
+                    content =Row([
+                        Icon(icons.ACCOUNT_CIRCLE_OUTLINED,color="BLACK"),
+                        Text("Foong Yuh Chung", color="BLACK"),
+
+                ])
+            
+                
+                )
                 )
 
             )
@@ -85,7 +92,7 @@ class ChatPage:
                         ])
 
         return View(
-            "/ChatPage",
+            "/Chat",
             controls=[
                 stack
             ]

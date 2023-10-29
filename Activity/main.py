@@ -9,7 +9,8 @@ from clinic_list import ClinicList
 from clinic_details import ClinicDetails
 from doctor_home_page import DoctorHomePage
 from medical_report import MedicalReportPage
-from chat import ChatPage
+from chat import Chat
+from chat_page import ChatPage
 
 def main(page: Page):
     
@@ -21,7 +22,8 @@ def main(page: Page):
         path(url="/ClinicDetails", clear=False, view=ClinicDetails().view),
         path(url="/DoctorHomePage", clear=False, view=DoctorHomePage().view),
         path(url="/MedicalReportPage", clear=False, view=MedicalReportPage().view),
-        path(url="/ChatPage", clear=False, view=ChatPage().view),
+        path(url="/Chat", clear=False, view=Chat().view),
+        path(url="/ChatPage", clear=False, view=ChatPage().view)
     ]
 
     Routing(page=page, app_routes=app_routes)
