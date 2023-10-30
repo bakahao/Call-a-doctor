@@ -66,7 +66,7 @@ class LoginPage:
             width=200,
             height=40,
             margin=margin.symmetric(vertical=480, horizontal=100),
-            content= ElevatedButton("Sign In", on_click=lambda _:page.go("/PatientHomePage"), bgcolor="#3CDAB4", color="BLACK")
+            content= ElevatedButton("Sign In", on_click=lambda _:page.go("/clinicHomePage"), bgcolor="#3CDAB4", color="BLACK")
         )
         
         SignUp_button = Container(

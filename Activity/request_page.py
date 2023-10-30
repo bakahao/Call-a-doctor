@@ -49,8 +49,9 @@ class RequestPage:
             width=40,
             height=50,
             margin=margin.symmetric(vertical=30, horizontal=10),
+            on_click=lambda _:page.go("/clinicHomePage"),
             content=ft.Image(
-                                src="./Activity/assets/images/backSharp.png",)
+                                src="./Activity/assets/images/backSharp.png",),
         )
 
         def open_dlg_modal(e):

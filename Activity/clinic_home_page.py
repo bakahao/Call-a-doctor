@@ -158,6 +158,7 @@ class ClinicHomePage:
                     ),
                 style = ft.ButtonStyle(
                 shape={ft.MaterialState.DEFAULT: RoundedRectangleBorder(radius=0),},),
+                on_click=lambda _:page.go("/doctorRegistration")
             ),
         )
 
@@ -165,7 +166,6 @@ class ClinicHomePage:
                         title_container,
                         title_text_container,
                         exit_button_container,
-                        avatar_container,
                         request_container,
                         doctor_list_container,
                         doctor_status_container,
