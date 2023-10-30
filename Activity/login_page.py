@@ -2,7 +2,8 @@ import flet
 from flet import *
 from flet_route import Params, Basket
 import os
-import pyrebase
+from auth import authenticate
+
 
 class LoginPage:
     def __init__(self):
@@ -14,8 +15,23 @@ class LoginPage:
         page.window_height = 850
         page.window_resizable = False
         
+        email_textfield = TextField(label="Enter E-mail", color="BLACK")
+        password_textfield = TextField(label="Enter Password", password=True, can_reveal_password=True, color="BLACK")
 
-        #Text container
+        def sign_in_clicked(e):
+            email = email_textfield.value
+            password = password_textfield.value
+
+            id_token = authenticate(email, password)
+
+            if id_token:
+                page.go("/PatientHomePage")
+            else:
+                print("Authentication failed. Please check your email and password.")
+            
+
+
+
         big_container = Container(
             width=400,
             height=750,
@@ -54,12 +70,12 @@ class LoginPage:
                                                 Container(
                                                     margin=margin.symmetric(horizontal=10),
                                                     alignment=alignment.center,
-                                                    content=TextField(label="Enter Email", color="BLACK")
+                                                    content=email_textfield
                                                 ),
                                             Container(
                                                 margin=margin.symmetric(horizontal= 10),
                                                 alignment=alignment.center,
-                                                content=TextField(label="Enter Password", password=True, can_reveal_password=True, color="BLACK")
+                                                content=password_textfield
                                             )
                                             ])
                                             
@@ -73,7 +89,7 @@ class LoginPage:
                                             margin=margin.only(top=10),
                                             alignment=alignment.center,
                                             content= ElevatedButton("Sign In", bgcolor="#3CDAB4", color="BLACK",
-                                                                    width=100, height=40,on_click=lambda _:page.go("/PatientHomePage"))
+                                                                    width=100, height=40,on_click=sign_in_clicked)
                                         ),
                                         Container(
                                             alignment=alignment.center,
@@ -98,10 +114,7 @@ class LoginPage:
                             ])
                         )
 
-
-        # 使用 Stack 包装大容器、文本元素和小容器，以正确的顺序
-        stack = Stack([big_container, 
-                        ])
+        stack = Stack([big_container])
     
         return View(
             "/",
@@ -109,13 +122,6 @@ class LoginPage:
                 stack
             ]
         )
-
-    # 将整个 stack 添加到页面
-#     page.add(stack)
-#     page.update()
-
-# if __name__ == '__main__':
-#     ft.app(target=login_page)
 
 
 

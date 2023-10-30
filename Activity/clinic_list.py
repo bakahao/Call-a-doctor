@@ -15,49 +15,12 @@ class ClinicList:
         page.window_resizable = False
         page.title=("Clinic List Page")
 
-        big_container = Container(
-                width=400,
-                height=750,
-                bgcolor="white",
-                border_radius=20,
-                content=Column([
-                    Container(
-                        width=400,
-                        height=100,
-                        bgcolor="#3CDAB4",
-                        border_radius=BorderRadius(
-                        top_left=20,
-                        top_right=20,
-                        bottom_left=50,
-                        bottom_right=50,
-                        ),
-                        content=Container(
-                                margin=margin.only(top=30),
-                                content=Text("Clinic List",
-                                color="BLACK",
-                                size=32,
-                                text_align=("CENTER"),
-                                style=TextThemeStyle.TITLE_MEDIUM,
-                                )
-                            )
-                        ),
-                        Container(
-                            width=350,
-                            height=300,
-                            margin=margin.symmetric(horizontal=10, vertical=10),
-                            content=Image(src=os.getcwd()+ "/Activity/assets/images/map.png",)
-                            
-                        ),
-                        
-                    ]   
-                )
-            )
         cl = Column(
-            spacing=10,
-            height=250,
-            width=380,
-            scroll=ScrollMode.HIDDEN,
-        )
+                    spacing=10,
+                    height=250,
+                    width=380,
+                    scroll=ScrollMode.HIDDEN,
+                )
             
         for i in range(1, 21):
             button_text=f"Clinic {i}"
@@ -69,8 +32,68 @@ class ClinicList:
             #page.go("/ClinicDetails", button_text=button_text)
             page.go("/ClinicDetails")
 
-        cl_container = Container(cl,
-                                margin=margin.symmetric(vertical=450, horizontal=10))
+        
+        big_container=Container(
+                width=400,
+                height=750,
+                bgcolor="white",
+                border_radius=20,
+                content=Column([
+                    Container(
+                        alignment=alignment.center,
+                        content=Column([
+                            Container(
+                                content=Container(
+                                    width=400,
+                                    height=100,
+                                    bgcolor="#3CDAB4",
+                                    border_radius=BorderRadius(
+                                    top_left=20,
+                                    top_right=20,
+                                    bottom_left=50,
+                                    bottom_right=50,
+                                    ),
+                                    content=Container(
+                                    margin=margin.only(top=30),
+                                    content=Text("Clinic List",
+                                    color="BLACK",
+                                    size=32,
+                                    text_align=("CENTER"),
+                                    style=TextThemeStyle.TITLE_MEDIUM,
+                                        )
+                                    )
+                                )
+                            ),
+                            Container(
+                                alignment=alignment.center,
+                                bgcolor="white",
+                                border_radius=20,
+                                margin=margin.symmetric(horizontal=10),
+                                content=Image(
+                                    src=(os.getcwd()+"/Activity/assets/images/map.png")
+                                )
+                            )
+                        ]),
+                    ),
+                    Container(
+                        margin=margin.symmetric(horizontal=10),
+                        alignment=alignment.center,
+                        content=cl
+                    )
+                ])
+                    )
+            
+    
+                   
+            
+
+                    
+                        
+                        
+    
+                
+                    
+        
         
         exit_button_container = Container(
                 width=40,
@@ -84,7 +107,6 @@ class ClinicList:
         
         stack = Stack([big_container,
                     exit_button_container,
-                    cl_container
                     ])
 
         return View(
