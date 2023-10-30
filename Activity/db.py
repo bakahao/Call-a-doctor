@@ -22,6 +22,14 @@ doc = Doctor(name, email, phoneNo, department, lenOfSvc)
 jsonDoc = doc.doctor_to_dict()
 print(jsonDoc)
 
-ref = db.reference('/User/Doctors')
+#Save data to database
+ref = db.reference('Users')
 user_ref = ref.child(uid)
 user_ref.set(jsonDoc)
+
+#Retrieve data from database
+print(user_ref.child('role').get())
+
+doc2 = Doctor()
+doc2.dict_to_doctor(user_ref.get())
+print(doc2.doctor_to_dict())
