@@ -1,7 +1,7 @@
 import json
 
 class Doctor:
-    def __init__(self, name=None, email=None, phoneNo=None, department=None, lenOfSvc=None, status=None):
+    def __init__(self, name=None, email=None, phoneNo=None, department=None, lenOfSvc=None, status="Online"):
         self.name = name
         self.role = 'Doctor'
         self.email = email
