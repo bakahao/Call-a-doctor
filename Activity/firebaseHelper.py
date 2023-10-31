@@ -52,3 +52,31 @@ def getUserDictData(uid):
         return user_ref.get()
     except:
         print("Error")
+
+#Get user's uid by email
+def getUserUIDByEmail(email):
+    try:
+        user = auth.get_user_by_email(email)
+        return user.uid
+    except:
+        print("Error")
+
+#Get user's role using email
+def getUserRoleByEmail(email):
+    try:
+        ref = db.reference("Users")
+        uid = getUserUIDByEmail(email)
+        user_ref = ref.child(uid)
+        return user_ref.child("role").get()
+    except:
+        print("Error")
+
+#Get specific data from user. For example, getUserSDataByEmail(email, 'phoneNo') -> it will return user phoneNo
+def getUserSDataByEmail(email, specificPath):
+    try:
+        ref = db.reference("Users")
+        uid = getUserUIDByEmail(email)
+        user_ref = ref.child(uid)
+        return user_ref.child(specificPath).get()
+    except:
+        print("Error")
