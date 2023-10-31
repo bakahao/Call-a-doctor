@@ -2,6 +2,8 @@ import flet
 from flet import *
 from flet_route import Params, Basket
 import os
+from firebaseHelper import authenticate
+import firebaseHelper
 
 class ClinicLoginPage:
     def __init__(self):
@@ -12,8 +14,25 @@ class ClinicLoginPage:
         page.window_width = 400
         page.window_height = 850
         page.window_resizable = False
-        
+    
+        email_textField = TextField(label="Enter Email", color="BLACK")
+        password_textField = TextField(label="Enter Password", password=True, can_reveal_password=True, color="BLACK")
 
+        def sign_in_clicked(e):
+            email = email_textField.value
+            password = password_textField.value
+
+            id_token = authenticate(email, password)
+
+            if id_token:
+                user_role = firebaseHelper.getUserRoleByEmail(email)
+                if user_role == 'Clinic':
+                    page.go("/PatientHomePage")
+                elif user_role == 'Admin':
+                    page.go("/AdminPage")
+                
+            else:
+                print("Authentication failed. Please check your email and password.")
 
         #big container for the white background
         big_container = Container(
@@ -54,12 +73,12 @@ class ClinicLoginPage:
                                                 Container(
                                                     margin=margin.symmetric(horizontal=10),
                                                     alignment=alignment.center,
-                                                    content=TextField(label="Enter Email", color="BLACK")
+                                                    content=email_textField
                                                 ),
                                             Container(
                                                 margin=margin.symmetric(horizontal= 10),
                                                 alignment=alignment.center,
-                                                content=TextField(label="Enter Password", password=True, can_reveal_password=True, color="BLACK")
+                                                content=password_textField
                                             )
                                             ])
                                             
@@ -73,7 +92,7 @@ class ClinicLoginPage:
                                             margin=margin.only(top=10),
                                             alignment=alignment.center,
                                             content= ElevatedButton("Sign In", bgcolor="#3CDAB4", color="BLACK",
-                                                                    width=100, height=40, )
+                                                                    width=100, height=40, on_click=None )
                                         ),
                                         Container(
                                             alignment=alignment.center,

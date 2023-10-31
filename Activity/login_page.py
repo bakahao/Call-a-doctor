@@ -2,7 +2,8 @@ import flet
 from flet import *
 from flet_route import Params, Basket
 import os
-from auth import authenticate
+from firebaseHelper import authenticate
+import firebaseHelper
 
 
 class LoginPage:
@@ -25,7 +26,12 @@ class LoginPage:
             id_token = authenticate(email, password)
 
             if id_token:
-                page.go("/PatientHomePage")
+                user_role = firebaseHelper.getUserRoleByEmail(email)
+                if user_role == 'Patient':
+                    page.go("/PatientHomePage")
+                elif user_role == 'Admin':
+                    page.go("/AdminPage")
+                
             else:
                 print("Authentication failed. Please check your email and password.")
             

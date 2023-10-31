@@ -2,6 +2,8 @@ import flet
 from flet import *
 from flet_route import Params, Basket
 import os
+from clinic import Clinic
+import firebaseHelper
 
 class ClinicRegistrationPage:
     def __init__(self):
@@ -12,6 +14,24 @@ class ClinicRegistrationPage:
         page.window_width = 400
         page.window_height = 850
         page.window_resizable = False
+
+        def sign_up_button_onClick(e):
+            if (not clinic_name.value or not clinic_address.value or not clinic_state.value or not clinic_city.value
+                or not clinic_tel.value or not clinic_operaton_time.value or not clinic_type.value or not clinic_service_type.value
+                or not clinic_email.value or not clinic_password.value):
+                 print("Please fill in all the blanks")
+            else:
+                role = "Clinic"
+                status = "pending"
+
+                uid = firebaseHelper.signup(clinic_email.value, clinic_password.value)
+                clinic = Clinic(clinic_name.value, clinic_address.value, clinic_state.value, clinic_city.value,
+                                clinic_tel.value, clinic_operaton_time.value, clinic_type.value, clinic_service_type.value,
+                                clinic_email.value, role, status)
+
+                
+                jsonClinic = clinic.clinic_to_dict()
+                firebaseHelper.saveClinicRequestData(uid, jsonClinic)
 
         def close_dlg(e):
                 dlg_modal.open = False
@@ -41,6 +61,46 @@ class ClinicRegistrationPage:
             width=380,
             scroll=ScrollMode.ALWAYS,
         )
+        clinic_name = TextField(label="Name of clinic",bgcolor="white",color="black")
+        clinic_address = TextField(label="Clinic Address",bgcolor="white",color="black")
+        clinic_state = Dropdown(
+                        width=148,
+                        color="grey",
+                        label="State",
+                        options=[
+                            dropdown.Option("Perlis"),
+                            dropdown.Option("Kedah"),
+                            dropdown.Option("Penang"),
+                            dropdown.Option("Perak"),
+                            dropdown.Option("Kuala Lumpur"),
+                            dropdown.Option("Selangor"),
+                            dropdown.Option("Negeri Sembilan"),
+                            dropdown.Option("Melaka"),
+                            dropdown.Option("Johor"),
+                            dropdown.Option("Pahang"),
+                            dropdown.Option("Terengganu"),
+                            dropdown.Option("Kelantan"),
+                            dropdown.Option("Sarawak"),
+                            dropdown.Option("Sabah"),
+                            ])
+        clinic_city = TextField(label="City",bgcolor="white",color="black")
+        clinic_tel = TextField(label="Tel",bgcolor="white",color="black")
+        clinic_operaton_time = TextField(label="Operation time for clinic (Hours)",bgcolor="white",color="black")                    
+        clinic_type = Dropdown(label="Choose your answer here",options=[
+                        dropdown.Option("Private medical clinic"),
+                        dropdown.Option("Private dental clinic")
+                        ]
+                        )
+        clinic_service_type = Dropdown(label="Choose your answer here",
+                                       options=[
+                                             dropdown.Option("General Medication"),
+                                             dropdown.Option("Specialist")
+                                             ]
+                                            )
+        
+        clinic_email = TextField(label="E-mail",color="BLACK")
+        clinic_password = TextField(label="Password",color="BLACK",password=True, can_reveal_password=True)
+
         cl.controls.append(
             Container(
                 content=Column([
@@ -63,16 +123,12 @@ class ClinicRegistrationPage:
                                                                                                             Container(
                                                                                                                 margin=margin.symmetric(horizontal=30),
                                                                                                                 alignment=alignment.center,
-                                                                                                                content=TextField(label="Name of clinic",
-                                                                                                                                bgcolor="white",
-                                                                                                                                color="black")
+                                                                                                                content=clinic_name
                                                                                                             ),
                                                                                                             Container(
                                                                                                                 margin=margin.symmetric(horizontal=30),
                                                                                                                 alignment=alignment.center,
-                                                                                                                content=TextField(label="Clinic Address",
-                                                                                                                                bgcolor="white",
-                                                                                                                                color="black")
+                                                                                                                content=clinic_address
                                                                                                             )
                                                                                                         ])
                                                                                                     ),
@@ -81,35 +137,12 @@ class ClinicRegistrationPage:
                                                                                                             Container(
                                                                                                                 bgcolor="White",
                                                                                                                 margin=margin.only(left=30),
-                                                                                                                content=Dropdown(
-                                                                                                                    #border_color="BLACK",
-                                                                                                                    width=148,
-                                                                                                                    color="grey",
-                                                                                                                    label="State",
-                                                                                                                    options=[
-                                                                                                                        dropdown.Option("Perlis"),
-                                                                                                                        dropdown.Option("Kedah"),
-                                                                                                                        dropdown.Option("Penang"),
-                                                                                                                        dropdown.Option("Perak"),
-                                                                                                                        dropdown.Option("Kuala Lumpur"),
-                                                                                                                        dropdown.Option("Selangor"),
-                                                                                                                        dropdown.Option("Negeri Sembilan"),
-                                                                                                                        dropdown.Option("Melaka"),
-                                                                                                                        dropdown.Option("Johor"),
-                                                                                                                        dropdown.Option("Pahang"),
-                                                                                                                        dropdown.Option("Terengganu"),
-                                                                                                                        dropdown.Option("Kelantan"),
-                                                                                                                        dropdown.Option("Sarawak"),
-                                                                                                                        dropdown.Option("Sabah"),
+                                                                                                                content=clinic_state
+                                                                                                                ),
 
-                                                                                                                    ]
-                                                                                                                )
-                                                                                                            ),
                                                                                                             Container(
                                                                                                                 width=148,
-                                                                                                                content=TextField(label="City",
-                                                                                                                                bgcolor="white",
-                                                                                                                                color="black")
+                                                                                                                content=clinic_city
                                                                                                             )
                                                                                                         ])
                                                                                                     )
@@ -119,16 +152,12 @@ class ClinicRegistrationPage:
                                                                                                 content=Column([
                                                                                                     Container(
                                                                                                         margin=margin.symmetric(horizontal=30),
-                                                                                                        content=TextField(label="Tel",
-                                                                                                                                bgcolor="white",
-                                                                                                                                color="black")
+                                                                                                        content=clinic_tel
                                                                                                     ),
                                                                                                     Container(
                                                                                                         margin=margin.symmetric(horizontal=30),
-                                                                                                        content=TextField(label="Operation time for clinic (Hours)",
-                                                                                                                                bgcolor="white",
-                                                                                                                                color="black")
-                                                                                                    )
+                                                                                                        content=clinic_operaton_time
+                                                                                                        )
                                                                                                 ])
                                                                                             )
                                                                                         ])
@@ -144,13 +173,7 @@ class ClinicRegistrationPage:
                                                                                             Container(
                                                                                                 margin=margin.symmetric(horizontal=30),
                                                                                                 bgcolor="White",
-                                                                                                content=Dropdown(
-                                                                                                    label="Choose your answer here",
-                                                                                                    options=[
-                                                                                                        dropdown.Option("Private medical clinic"),
-                                                                                                        dropdown.Option("Private dental clinic")
-                                                                                                    ]
-                                                                                                )
+                                                                                                content=clinic_type
                                                                                             )
                                                                                         ])
                                                                                     )
@@ -165,13 +188,7 @@ class ClinicRegistrationPage:
                                                                                     Container(
                                                                                             margin=margin.symmetric(horizontal=30),
                                                                                             bgcolor="White",
-                                                                                            content=Dropdown(
-                                                                                            label="Choose your answer here",
-                                                                                                options=[
-                                                                                                    dropdown.Option("General Medication"),
-                                                                                                    dropdown.Option("Specialist")
-                                                                                                    ]
-                                                                                                )
+                                                                                            content=clinic_service_type
                                                                                             )    
                                                                                         ])
                                                                                     )
@@ -194,19 +211,11 @@ class ClinicRegistrationPage:
                                                                         content=Column([
                                                                                 Container(
                                                                                     margin=margin.symmetric(horizontal=30),
-                                                                                    content=TextField(
-                                                                                            label="Username",
-                                                                                            color="BLACK"
-                                                                                    )
+                                                                                    content=clinic_email
                                                                                 ),
                                                                                 Container(
                                                                                     margin=margin.symmetric(horizontal=30),
-                                                                                    content=TextField(
-                                                                                            label="Password",
-                                                                                            color="BLACK",
-                                                                                            password=True, 
-                                                                                              can_reveal_password=True,
-                                                                                    )
+                                                                                    content=clinic_password
                                                                                 )
                                                                         ])
                                                                     )
@@ -219,7 +228,7 @@ class ClinicRegistrationPage:
                                                                         color="BLACK",
                                                                         bgcolor="#3CDAB4",
                                                                         height=50,
-                                                                        on_click=open_dlg_modal
+                                                                        on_click=sign_up_button_onClick
                                                                   )
                                                             )
                                                         ])
@@ -281,6 +290,6 @@ class ClinicRegistrationPage:
         return View(
             "/ClinicRegistrationPage",
             controls=[
-                stack
+                stack,
             ]
         )

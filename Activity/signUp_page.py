@@ -4,9 +4,10 @@ from flet_route import Params, Basket
 import os
 import pyrebase
 from functools import partial
-from auth import signup
-
-
+import firebase_admin 
+from firebase_admin import credentials
+from patient import Patient
+import firebaseHelper
 
 class SignUpPage:
     def __init__(self):
@@ -19,18 +20,52 @@ class SignUpPage:
         page.window_height = 850
         page.window_resizable = False
 
+        name_textfield = TextField(label="Enter Full Name (Same as IC)", color="BLACK")
         email_textfield = TextField(label="Enter E-mail", color="BLACK")
         password_textfield = TextField(label="Enter password", color="BLACK")
-                            
+        phone_textfield = TextField(label="Enter phone number", color="BLACK")
+
+        def close_dlg(e):
+                dlg_modal.open = False
+                page.go("/")
+                page.update
+
+
+        dlg_modal = AlertDialog(
+                modal=True,
+                title=Text("Congratulation"),
+                content=Text("Registration Successfully"),
+                actions=[
+                    TextButton("Okay", on_click=close_dlg),
+                ],
+                actions_alignment=MainAxisAlignment.END,
+                on_dismiss=lambda e: print("Modal dialog dismissed!"),
+            )
+
+        def open_dlg_modal(e):
+            page.dialog = dlg_modal
+            dlg_modal.open = True
+            page.update()
+
 
         def sign_up_clicked(e):
-            if not password_textfield.value:
-                password_textfield.error_text = "Please enter your password"
+            if not password_textfield.value or not email_textfield.value or not name_textfield.value or not phone_textfield.value:
+                #password_textfield.error_text = "Please enter your password"
                 print("ERROR MESSAGESSSS")
             else:
-                email = email_textfield.value
-                password = password_textfield.value
-                signup(email, password)
+                email_value = email_textfield.value
+                password_value = password_textfield.value
+                phone_value = phone_textfield.value
+                name_value = name_textfield.value
+                role = "Patient"
+
+                uid = firebaseHelper.signup(email_value, password_value)
+                pat = Patient(name_value, email_value, phone_value, role)
+                jsonPat = pat.patient_to_dict()
+                firebaseHelper.saveUserData(uid, jsonPat)
+                open_dlg_modal(e)
+
+
             
         register = Container(
                     content=Column([
@@ -44,7 +79,7 @@ class SignUpPage:
                                         content=Column([
                                             Container(
                                                 margin=margin.symmetric(horizontal=10),
-                                                content=TextField(label="Enter Full Name (Same as IC)", color="BLACK")
+                                                content=name_textfield
                                                 ),
                                                 Container(
                                                     alignment=alignment.center,
@@ -55,7 +90,7 @@ class SignUpPage:
                                         ),
                                             Container(
                                                 margin=margin.symmetric(horizontal= 10),
-                                                content=TextField(label="Enter phone number", color="BLACK")
+                                                content=phone_textfield
                                         )
                                     ])
                                 ),
