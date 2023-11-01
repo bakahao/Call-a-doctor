@@ -21,13 +21,13 @@ class ClinicRegistrationPage:
                 or not clinic_email.value or not clinic_password.value):
                  print("Please fill in all the blanks")
             else:
-                role = "Clinic"
-                status = "pending"
+                # role = "Clinic"
+                # status = "pending"
 
                 uid = firebaseHelper.signup(clinic_email.value, clinic_password.value)
                 clinic = Clinic(clinic_name.value, clinic_address.value, clinic_state.value, clinic_city.value,
                                 clinic_tel.value, clinic_operaton_time.value, clinic_type.value, clinic_service_type.value,
-                                clinic_email.value, role, status)
+                                clinic_email.value)
 
                 
                 jsonClinic = clinic.clinic_to_dict()

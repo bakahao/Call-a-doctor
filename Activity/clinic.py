@@ -2,7 +2,8 @@ import json
 
 
 class Clinic:
-    def __init__(self, name, address, state, city, phoneNo, operationTime, clinicType, serviceType, email, role, status):
+    def __init__(self, name=None, address=None, state=None, city=None, phoneNo=None, operationTime=None, 
+                 clinicType=None, serviceType=None, email=None, role="Clinic", status="pending"):
         self.name = name
         self.address = address
         self.state = state
@@ -32,6 +33,15 @@ class Clinic:
             "status" : self.status
         }
     
-    def clinic_to_json(self):
-        jsonStr = json.dumps(self.clinic_to_dict(), indent=4)
-        return jsonStr
+    def dict_to_clinic(self, cdict):
+        self.name = cdict['name']
+        self.address = cdict['address']
+        self.state = cdict['state']
+        self.city = cdict['city']
+        self.phoneNo = cdict['phoneNo']
+        self.operationTime = cdict['operationTime']
+        self.clinicType = cdict['clinicType']
+        self.serviceType = cdict['serviceType']
+        self.email = cdict['email']
+        self.role = cdict['role']
+        self.status = cdict['status']

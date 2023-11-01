@@ -28,8 +28,8 @@ class ClinicLoginPage:
                 user_role = firebaseHelper.getUserRoleByEmail(email)
                 if user_role == 'Clinic':
                     status = firebaseHelper.getClinicDataByEmail(email, status)
-                    if status=='Pending':
-                        page.go("/PatientHomePage")
+                    if status=='approved':
+                        page.go("/ClinicHomePage")
                     
                 elif user_role == 'Admin':
                     page.go("/AdminPage")
@@ -95,7 +95,7 @@ class ClinicLoginPage:
                                             margin=margin.only(top=10),
                                             alignment=alignment.center,
                                             content= ElevatedButton("Sign In", bgcolor="#3CDAB4", color="BLACK",
-                                                                    width=100, height=40, on_click=None )
+                                                                    width=100, height=40, on_click=sign_in_clicked)
                                         ),
                                         Container(
                                             alignment=alignment.center,

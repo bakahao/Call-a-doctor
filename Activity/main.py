@@ -18,7 +18,7 @@ from chat_page import ChatPage
 from clinic_login_page import ClinicLoginPage
 from clinic_registration_page import ClinicRegistrationPage
 from adminPage import AdminPage
-
+from clinic_request_details import ClinicRequestDetails
 
 def main(page: Page):
     
@@ -37,6 +37,7 @@ def main(page: Page):
         path(url="/ClinicLoginPage", clear=False, view=ClinicLoginPage().view),
         path(url="/ClinicRegistrationPage", clear=False, view=ClinicRegistrationPage().view),
         path(url="/AdminPage", clear=False, view=AdminPage().view),
+        path(url="/ClinicRequestDetails/:uid", clear=False, view=ClinicRequestDetails().view),
     ]
 
     Routing(page=page, app_routes=app_routes)
