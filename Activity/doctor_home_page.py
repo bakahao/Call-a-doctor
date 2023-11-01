@@ -1,14 +1,11 @@
 from flet import *
 from flet_route import Params, Basket
 import os
+import firebaseHelper
 
 class DoctorHomePage:
     def __init__(self):
         pass
-    
-     
-
-    
 
     def view(self, page: Page, params: Params, basket: Basket):
         page.title = "Doctor Home Page"
@@ -16,35 +13,59 @@ class DoctorHomePage:
         page.window_height = 850
         page.window_resizable = False
 
-    
-        self.dStatus = Icon(name=icons.CIRCLE_ROUNDED, color="White")
+        email ='p21013579@student.newinti.edu.my'
 
-        def onButtonClick(e):
-            if e.control.data == "Online":
-                self.dStatus = Icon(name=icons.CIRCLE_ROUNDED, color="Green" )
-                page.update()
-            elif e.control.data == "Busy":
-                self.dStatus = Icon(name=icons.CIRCLE_ROUNDED, color="Red")
-                page.update()
-                
+        def getUserStatus():
+            status = firebaseHelper.getUserSDataByEmail(email, 'status')
+            if status == "Online":
+                return Icon(name=icons.CIRCLE_ROUNDED, color="Green",)
+            elif status == 'Busy':
+                return Icon(name=icons.CIRCLE_ROUNDED, color="Yellow",)
+            elif status == 'Offline':
+                return Icon(name=icons.CIRCLE_ROUNDED, color="Red",)
             
-            avatar_container.content = self.dStatus
+
+        def onPBClick(e):
+            if e.control.data == "Online":
+                pb.content = Icon(name=icons.CIRCLE_ROUNDED, color="Green",)
+                firebaseHelper.updateUserSDataByEmail(email, {'status':'Online'})
+            elif e.control.data == "Busy":
+                pb.content = Icon(name=icons.CIRCLE_ROUNDED, color="Yellow",)
+                firebaseHelper.updateUserSDataByEmail(email, {'status':'Busy'})
+            elif e.control.data == "Offline":
+                pb.content = Icon(name=icons.CIRCLE_ROUNDED, color="Red",)
+                firebaseHelper.updateUserSDataByEmail(email, {'status':'Offline'})
+            page.update()
+
+        pb = PopupMenuButton(
+            content=Icon(name=icons.CIRCLE_ROUNDED, color="Green",),
+            items=[
+                    PopupMenuItem(text="Status"),
+                    PopupMenuItem(content= Row(
+                    [
+                        Icon(icons.CIRCLE_ROUNDED, color = "Green"),
+                        Text("Online"),
+                    ]),data="Online", on_click=onPBClick),
+                    PopupMenuItem(content= Row(
+                    [
+                        Icon(icons.CIRCLE_ROUNDED, color = "Yellow"),
+                        Text("Busy"),
+                    ]),data="Busy", on_click=onPBClick),
+                     PopupMenuItem(content= Row(
+                    [
+                        Icon(icons.CIRCLE_ROUNDED, color = "Red"),
+                        Text("Offline"),
+                    ]),data="Offline", on_click=onPBClick)
+            ]
+        )
 
         avatar_container = Container(
                 width=40,
                 height=40,
                 margin=margin.only(top=35, left=300),
 
-                content = PopupMenuButton(
-                    content= self.dStatus,
-
-                    items=[
-                    PopupMenuItem(text="Status"),
-                    PopupMenuItem(content=ElevatedButton(text="Online",icon=icons.CIRCLE_ROUNDED, icon_color="Green",data="Online", on_click= onButtonClick),  ),
-                    PopupMenuItem(content=ElevatedButton(text="Busy",icon=icons.CIRCLE_ROUNDED, icon_color="Red",data="BUsy", on_click= onButtonClick ),  )
-                    ]
-            )
-            )
+                content = pb,
+        )
        
 
         #big container for the white background
@@ -77,6 +98,7 @@ class DoctorHomePage:
                             text_align=("CENTER"),
                             style=TextThemeStyle.TITLE_MEDIUM)
         )
+
         exit_button_container = Container(
             width=40,
             height=40,
@@ -131,7 +153,7 @@ class DoctorHomePage:
             content=ElevatedButton(
             width=150,
             height=150,
-            on_click=lambda _:page.go("/ClinicList"),
+            on_click=lambda _:page.go("/AppoinmentPage"),
             style=ButtonStyle(
                     shape=RoundedRectangleBorder(radius=10),
                     bgcolor="#BCCCE4"
