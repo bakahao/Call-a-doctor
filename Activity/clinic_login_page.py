@@ -29,7 +29,9 @@ class ClinicLoginPage:
                 if user_role == 'Clinic':
                     status = firebaseHelper.getClinicDataByEmail(email, status)
                     if status=='approved':
-                        page.go("/ClinicHomePage")
+                        page.go("/clinicHomePage")
+                elif user_role == 'Doctor':
+                    page.go("/DoctorHomePage")
                     
                 elif user_role == 'Admin':
                     page.go("/AdminPage")
