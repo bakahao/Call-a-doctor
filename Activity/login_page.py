@@ -55,6 +55,7 @@ class LoginPage:
             margin=margin.symmetric(vertical=350, horizontal= 10),
             content=TextField(label="Enter Email", color="BLACK")
         )
+        
         passwordTextField_Container = Container(
             width=380,
             height=60,

@@ -77,6 +77,18 @@ def getUserSDataByEmail(email, specificPath):
         ref = db.reference("Users")
         uid = getUserUIDByEmail(email)
         user_ref = ref.child(uid)
-        return user_ref.child(specificPath).get()
+       return user_ref.child(specificPath).get()
     except:
         print("Error")
+
+#Update user's specific data. For example, specificDict = {'status' : 'Online'} will update 
+#the user status to online
+def updateUserSDataByEmail(email, specificDict):
+    try:
+        ref = db.reference("Users")
+        uid = getUserUIDByEmail(email)
+        user_ref = ref.child(uid)
+        user_ref.update(specificDict)
+    except:
+        print("Error")
+

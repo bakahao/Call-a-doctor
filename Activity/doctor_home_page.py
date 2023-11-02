@@ -1,23 +1,79 @@
 from flet import *
 from flet_route import Params, Basket
 import os
+import firebaseHelper
 
-class PatientHomePage:
+class DoctorHomePage:
     def __init__(self):
         pass
 
     def view(self, page: Page, params: Params, basket: Basket):
-        page.title = "Patient Home Page"
+        page.title = "Doctor Home Page"
         page.window_width = 400
         page.window_height = 850
         page.window_resizable = False
+
+        email ='p21013579@student.newinti.edu.my'
+
+        def getUserStatus():
+            status = firebaseHelper.getUserSDataByEmail(email, 'status')
+            if status == "Online":
+                return Icon(name=icons.CIRCLE_ROUNDED, color="Green",)
+            elif status == 'Busy':
+                return Icon(name=icons.CIRCLE_ROUNDED, color="Yellow",)
+            elif status == 'Offline':
+                return Icon(name=icons.CIRCLE_ROUNDED, color="Red",)
+            
+
+        def onPBClick(e):
+            if e.control.data == "Online":
+                pb.content = Icon(name=icons.CIRCLE_ROUNDED, color="Green",)
+                firebaseHelper.updateUserSDataByEmail(email, {'status':'Online'})
+            elif e.control.data == "Busy":
+                pb.content = Icon(name=icons.CIRCLE_ROUNDED, color="Yellow",)
+                firebaseHelper.updateUserSDataByEmail(email, {'status':'Busy'})
+            elif e.control.data == "Offline":
+                pb.content = Icon(name=icons.CIRCLE_ROUNDED, color="Red",)
+                firebaseHelper.updateUserSDataByEmail(email, {'status':'Offline'})
+            page.update()
+
+        pb = PopupMenuButton(
+            content=Icon(name=icons.CIRCLE_ROUNDED, color="Green",),
+            items=[
+                    PopupMenuItem(text="Status"),
+                    PopupMenuItem(content= Row(
+                    [
+                        Icon(icons.CIRCLE_ROUNDED, color = "Green"),
+                        Text("Online"),
+                    ]),data="Online", on_click=onPBClick),
+                    PopupMenuItem(content= Row(
+                    [
+                        Icon(icons.CIRCLE_ROUNDED, color = "Yellow"),
+                        Text("Busy"),
+                    ]),data="Busy", on_click=onPBClick),
+                     PopupMenuItem(content= Row(
+                    [
+                        Icon(icons.CIRCLE_ROUNDED, color = "Red"),
+                        Text("Offline"),
+                    ]),data="Offline", on_click=onPBClick)
+            ]
+        )
+
+        avatar_container = Container(
+                width=40,
+                height=40,
+                margin=margin.only(top=35, left=300),
+
+                content = pb,
+        )
+       
 
         #big container for the white background
         big_container = Container(
             width=400,
             height=750,
             bgcolor="white",
-            border_radius=20
+            border_radius=20,
         )
 
         title_container = Container(
@@ -36,13 +92,13 @@ class PatientHomePage:
             width=150,
             height=60,
             margin=margin.symmetric(horizontal=130, vertical=30),
-            content=Text("Home",
+            content=Text("Doctor Home Page",
                             color="BLACK",
                             size=32,
                             text_align=("CENTER"),
                             style=TextThemeStyle.TITLE_MEDIUM)
         )
-        
+
         exit_button_container = Container(
             width=40,
             height=40,
@@ -54,14 +110,14 @@ class PatientHomePage:
         )
 
         #CREATE CLINIC LIST BUTTON
-        clinic_list_button =Container(
+        medical_report_button =Container(
             width=150,
             height=150,
             margin=margin.symmetric(vertical=150, horizontal=20),
             content=ElevatedButton(
             width=150,
             height=150,
-            on_click=lambda _:page.go("/ClinicList"),
+            on_click=lambda _:page.go("/MedicalReportPage"),
             style=ButtonStyle(
                     shape=RoundedRectangleBorder(radius=10),
                     bgcolor="#FFD0D0"
@@ -69,16 +125,18 @@ class PatientHomePage:
             content=Column([
                 Container(
                 width=100,
-                height=100,
-                content=Image(src=os.getcwd()+ "/Activity/assets/images/clinic.png",
+                height=80,
+                margin=margin.only(top=10, left=10),
+                content=Image(src=os.getcwd()+ "/Activity/assets/images/medical_report.png",
                 width=100,
                 height=100,
                     ),
                 ),
                 Container(
                     width=150,
-                    height=30,
-                    content=Text("Clinic List", color="Black", size=20, style=TextThemeStyle.TITLE_MEDIUM,text_align="CENTER")
+                    height=100,
+                    margin=margin.only(bottom=50),
+                    content=Text("Medical Report", color="Black", size=17, style=TextThemeStyle.TITLE_MEDIUM,text_align="CENTER")
                     )
                 ]
             )
@@ -86,45 +144,16 @@ class PatientHomePage:
             )
         )
 
-        #CREATE FEEDBACK BUTTON
-        feedback_button =Container(
+       
+
+        appoinment_button =Container(
             width=150,
             height=150,
             margin=margin.only(left=200, top=150),
             content=ElevatedButton(
             width=150,
             height=150,
-            style=ButtonStyle(
-                    shape=RoundedRectangleBorder(radius=10),
-                    bgcolor="#C5F6BD"
-                ),
-            content=Column([
-                Container(
-                width=90,
-                height=90,
-                margin=margin.only(top=10, left=10),
-                content=Image(src=os.getcwd()+ "/Activity/assets/images/review.png",width=100,height=100),
-                ),
-                Container(
-                    width=150,
-                    height=30,
-                    margin=margin.only(bottom=50),
-                    content=Text("Feedback", color="Black", size=20, style=TextThemeStyle.TITLE_MEDIUM,text_align="CENTER")
-                    )
-                ]
-            ),
-            
-            
-            )
-        )
-
-        schedule_button =Container(
-            width=150,
-            height=150,
-            margin=margin.only(left=200, top=330),
-            content=ElevatedButton(
-            width=150,
-            height=150,
+            on_click=lambda _:page.go("/AppoinmentPage"),
             style=ButtonStyle(
                     shape=RoundedRectangleBorder(radius=10),
                     bgcolor="#BCCCE4"
@@ -140,7 +169,7 @@ class PatientHomePage:
                     width=150,
                     height=30,
                     margin=margin.only(bottom=50),
-                    content=Text("Schedule", color="Black", size=20, style=TextThemeStyle.TITLE_MEDIUM,text_align="CENTER")
+                    content=Text("Appoinment", color="Black", size=17, style=TextThemeStyle.TITLE_MEDIUM,text_align="CENTER")
                     )
                 ]
             ),
@@ -149,13 +178,14 @@ class PatientHomePage:
             )
         )
 
-        chat_button =Container(
+        consultation_button =Container(
             width=150,
             height=150,
             margin=margin.symmetric(vertical=330, horizontal=20),
             content=ElevatedButton(
             width=150,
             height=150,
+            on_click=lambda _:page.go("/Chat"),
             style=ButtonStyle(
                     shape=RoundedRectangleBorder(radius=10),
                     bgcolor="#B9F5FD"
@@ -165,32 +195,38 @@ class PatientHomePage:
                 width=90,
                 height=90,
                 margin=margin.only(top=10, left=10),
-                content=Image(src=os.getcwd()+ "/Activity/assets/images/chat.png",width=100,height=100),
+                content=Image(src=os.getcwd()+ "/Activity/assets/images/chat.png",
+                width=100,
+                height=100,
+                    ),
                 ),
                 Container(
                     width=150,
                     height=30,
                     margin=margin.only(bottom=50),
-                    content=Text("Chat", color="Black", size=20, style=TextThemeStyle.TITLE_MEDIUM,text_align="CENTER")
+                    content=Text("Consultation", color="Black", size=17, style=TextThemeStyle.TITLE_MEDIUM,text_align="CENTER")
                     )
                 ]
-            ),
-            
+            )
             
             )
         )
+
+        
+
         stack =Stack([big_container,
                         title_container,
                         title_text_container,
                         exit_button_container,
-                        clinic_list_button,
-                        feedback_button,
-                        schedule_button,
-                        chat_button
+                        medical_report_button,
+                        
+                        appoinment_button,
+                        consultation_button,
+                        avatar_container
                         ])
         
         return View(
-            "/PatientHomePage",
+            "/DoctorHomePage",
             controls=[
                 stack
             ]
@@ -202,3 +238,6 @@ class PatientHomePage:
 if __name__ == '__main__':
     app(target=PatientHomePage().view)
     """
+        
+
+        
