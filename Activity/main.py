@@ -7,6 +7,9 @@ from signUp_page import SignUpPage
 from patient_home_page import PatientHomePage
 from clinic_list import ClinicList
 from clinic_details import ClinicDetails
+from clinic_home_page import ClinicHomePage
+from request_page import RequestPage
+from doctorRegistration import DoctorRegistrationPage
 
 def main(page: Page):
     
@@ -16,6 +19,9 @@ def main(page: Page):
         path(url="/PatientHomePage", clear=False, view=PatientHomePage().view),
         path(url="/ClinicList", clear=False, view=ClinicList().view),
         path(url="/ClinicDetails", clear=False, view=ClinicDetails().view),
+        path(url="/clinicHomePage", clear=False, view=ClinicHomePage().view),
+        path(url="/requestPage", clear=False, view=RequestPage().view),
+        path(url='/doctorRegistration', clear=False, view=DoctorRegistrationPage().view)
     ]
 
     Routing(page=page, app_routes=app_routes)
