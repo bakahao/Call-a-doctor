@@ -4,9 +4,6 @@ import os
 from doctor import Doctor
 import requests
 
-
-
-
 cred = credentials.Certificate(os.getcwd() + "\Activity\serviceAccount.json")
 firebase_admin.initialize_app(cred, {
     'databaseURL' : 'https://calladoctor-200ba-default-rtdb.asia-southeast1.firebasedatabase.app/'
@@ -58,10 +55,10 @@ def getUserDictData(uid):
 
 #Get user's uid by email
 def getUserUIDByEmail(email):
-    
+    try:
         user = auth.get_user_by_email(email)
-        return user.uid 
-    
+        return user.uid
+    except:
         print("Error")
 
 #Get user's role using email
@@ -75,12 +72,12 @@ def getUserRoleByEmail(email):
         print("Error")
 
 #Get specific data from user. For example, getUserSDataByEmail(email, 'phoneNo') -> it will return user phoneNo
-def getUserSDataByEmail(email, status):
+def getUserSDataByEmail(email, specificPath):
     try:
         ref = db.reference("Users")
         uid = getUserUIDByEmail(email)
         user_ref = ref.child(uid)
-        return user_ref.child(status).get()
+       return user_ref.child(specificPath).get()
     except:
         print("Error")
 
@@ -94,8 +91,4 @@ def updateUserSDataByEmail(email, specificDict):
         user_ref.update(specificDict)
     except:
         print("Error")
-
-
-
-
 
