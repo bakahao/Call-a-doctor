@@ -28,7 +28,7 @@ class LoginPage:
             if id_token:
                 user_role = firebaseHelper.getUserRoleByEmail(email)
                 if user_role == 'Patient':
-                    page.go("/PatientHomePage")
+                    page.go(f"/PatientHomePage/{email}")
                 elif user_role == 'Admin':
                     page.go("/AdminPage")
                 

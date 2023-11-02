@@ -371,7 +371,7 @@ class SchedulePage:
                 content=IconButton(
                                     icons.EXIT_TO_APP_ROUNDED,
                                     icon_color="BLACK",
-                                    on_click=lambda _:page.go("/PatientHomePage"))
+                                    on_click=lambda _:page.go("/PatientHomePage/:email"))
             )
 
         stack = Stack([

@@ -2,6 +2,11 @@ import flet
 from flet import *
 from flet_route import Params, Basket
 import os
+from firebaseHelper import *
+from clinic import Clinic
+from request_doctor import RequestDoctor
+from patient import Patient
+import firebaseHelper
 
 class ClinicDetails:
     def __init__(self):
@@ -13,8 +18,24 @@ class ClinicDetails:
             page.window_resizable = False
             page.title=("Clinic Details Page")
 
-            """text = params.get("text")
-            print(text)"""
+            clinicD = getClinicDictData(params.uid)
+            cli = Clinic()
+            cli.dict_to_clinic(clinicD)
+            
+            clinic_uid = params.uid
+            user_email = params.email
+            user_uid = getUserUIDByEmail(user_email)
+
+            # req= RequestDoctor(user_email, clinic_uid)
+            # jsonPatient = req.request_to_dict()
+            # firebaseHelper.saveUserRequestDoctorData(user_uid, jsonPatient)
+            
+
+            #uid = getUserUIDByEmail(email)
+            
+
+            
+
             big_container = Container(
                 width=400,
                     height=750,
@@ -60,6 +81,17 @@ class ClinicDetails:
                             )
                         ])
             )
+            def yes_option(e):
+
+                try:
+                    req= RequestDoctor(user_email, clinic_uid)
+                    jsonPatient = req.request_to_dict()
+                    firebaseHelper.saveUserRequestDoctorData(user_uid, jsonPatient)
+                    close_dlg(e)
+                except TypeError as e:
+                     print("Only can request doctor a time before admin process your request!")
+                
+
             def close_dlg(e):
                 dlg_modal.open = False
                 page.update()
@@ -70,7 +102,7 @@ class ClinicDetails:
                 title=Text("Please confirm"),
                 content=Text("Are you sure you want to request a doctor from this clinic?"),
                 actions=[
-                    TextButton("Yes", on_click=close_dlg),
+                    TextButton("Yes", on_click=yes_option),
                     TextButton("No", on_click=close_dlg),
                 ],
                 actions_alignment=MainAxisAlignment.END,
@@ -79,6 +111,7 @@ class ClinicDetails:
             
 
             def open_dlg_modal(e):
+                
                 page.dialog = dlg_modal
                 dlg_modal.open = True
                 page.update()
@@ -104,7 +137,7 @@ class ClinicDetails:
                  width=200,
                  height=70,
                  margin=margin.only(left=130, top=130),
-                 content=Text("Clinic 1", color="black", size=16, style=TextThemeStyle.TITLE_MEDIUM)
+                 content=Text(value=cli.name, color="black", size=16, style=TextThemeStyle.TITLE_MEDIUM)
             )
 
             clinic_rating = Container(
@@ -128,7 +161,7 @@ class ClinicDetails:
                     content=IconButton(
                                         icons.EXIT_TO_APP_ROUNDED,
                                         icon_color="BLACK",
-                                        on_click=lambda _:page.go("/ClinicList")
+                                        on_click=lambda _:page.go("/ClinicList/:email")
                                         )
                 )
             
@@ -180,21 +213,8 @@ class ClinicDetails:
                         ])
             
             return View(
-                "/ClinicDetails",
+                "/ClinicDetails/:uid/:email",
                 controls=[
                     stack
                 ]
             )
-
-"""page.add(stack)
-        page.update()
-
-app(target=clinicList)"""
-
-
-"""return View(
-            "/ClinicDetails",
-            controls=[
-                stack
-            ]
-        )"""

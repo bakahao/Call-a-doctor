@@ -123,6 +123,7 @@ def updateClinicDataByEmail(email, specificDict):
     except:
         print("Error")
 
+#delete clinic dictionary
 def deleteClinicDataByEmail(email):
     try:
         ref = db.reference("ClinicRequest")
@@ -138,4 +139,23 @@ def deleteClinic(email):
         auth.delete_user(uid)
     except:
         return None
+    
+def saveUserRequestDoctorData(uid , requestDoctorDict):
+    try:
+        ref = db.reference("PatientRequestDoctor")
+        user_ref = ref.child(uid)
+        user_ref.set(requestDoctorDict)
+    except:
+        print("Error")
+
+def getRequestDoctorUIDByEmail(email):
+    try:
+        user = auth.get_user_by_email(email)
+        return user.uid
+    except:
+        print("Error")
+
+        
+    
+
 

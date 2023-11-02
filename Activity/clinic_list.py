@@ -2,7 +2,7 @@ import flet
 from flet import *
 from flet_route import Params, Basket
 import os
-
+from firebaseHelper import *
 
 class ClinicList:
     def __init__(self):
@@ -15,18 +15,38 @@ class ClinicList:
         page.window_resizable = False
         page.title=("Clinic List Page")
 
+
         cl = Column(
                     spacing=10,
                     height=250,
                     width=380,
-                    scroll=ScrollMode.HIDDEN,
+                    scroll=ScrollMode.AUTO,
                 )
+        email = params.email
+        def getClinicButton():
+            if getClinicDictData(i)['status'] == 'approved':
+                    button_text = Text(getClinicDictData(i)['name'], data=i, color="BLACK")
+                    cl.controls.append(Container(
+                        content=ElevatedButton(bgcolor="#AFF7E5", width=400, on_click=lambda _:page.go(f"/ClinicDetails/{button_text.data}/{email}"),
+                                               content=Container(
+                                                   width=350,
+                                                   content=button_text
+                                               ))
+                                               
+                    ))
+
+        clinicLength = getClinicDictDataLen()
             
-        for i in range(1, 21):
-            button_text=f"Clinic {i}"
-            cl.controls.append(ElevatedButton(button_text,  key=str(i), width=350, bgcolor="#AFF7E5", color="BLACK",
-                                              on_click=lambda _, text=button_text: handle_button_click(page, text)))
-            
+        try:
+            for i in clinicLength:
+                Container(
+                     getClinicButton()
+                )
+                
+        except TypeError as e:
+            print(f"An error occurred: {e}")
+
+
         def handle_button_click(page, button_text):
             print(f"Button clicked with text: {button_text}")
             #page.go("/ClinicDetails", button_text=button_text)
@@ -83,15 +103,6 @@ class ClinicList:
                 ])
                     )
             
-    
-                   
-            
-
-                    
-                        
-                        
-    
-                
                     
         
         
@@ -102,7 +113,7 @@ class ClinicList:
                 content=IconButton(
                                     icons.EXIT_TO_APP_ROUNDED,
                                     icon_color="BLACK",
-                                    on_click=lambda _:page.go("/PatientHomePage"))
+                                    on_click=lambda _:page.go("/PatientHomePage/:email"))
             )
         
         stack = Stack([big_container,
@@ -110,13 +121,9 @@ class ClinicList:
                     ])
 
         return View(
-            "/ClinicList",
+            "/ClinicList/:email",
             controls=[
                 stack
             ]
         )
     
-    """ page.add(stack)
-        page.update()
-
-app(target=clinicList)"""

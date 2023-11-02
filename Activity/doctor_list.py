@@ -57,7 +57,7 @@ class DoctorDetails:
                     content=IconButton(
                                         icons.EXIT_TO_APP_ROUNDED,
                                         icon_color="BLACK",
-                                        on_click=lambda _:page.go("/ClinicDetails")
+                                        on_click=lambda _:page.go("/ClinicDetails/:uid/:email")
                                         )
                 )
             

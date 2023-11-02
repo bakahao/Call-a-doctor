@@ -25,9 +25,9 @@ def main(page: Page):
     app_routes = [
         path(url="/", clear=True, view=LoginPage().view),
         path(url="/signUp", clear=True, view=SignUpPage().view),
-        path(url="/PatientHomePage", clear=False, view=PatientHomePage().view),
-        path(url="/ClinicList", clear=False, view=ClinicList().view),
-        path(url="/ClinicDetails", clear=False, view=ClinicDetails().view),
+        path(url="/PatientHomePage/:email", clear=False, view=PatientHomePage().view),
+        path(url="/ClinicList/:email", clear=False, view=ClinicList().view),
+        path(url="/ClinicDetails/:uid/:email", clear=False, view=ClinicDetails().view),
         path(url="/DoctorDetails", clear=False, view=DoctorDetails().view),
         path(url="/FeedbackPage", clear=False, view=FeedbackPage().view),
         path(url="/RatingPage", clear=False, view=RatingPage().view),
