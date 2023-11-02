@@ -5,39 +5,39 @@ import os
 from firebaseHelper import authenticate
 import firebaseHelper
 
-
-class LoginPage:
+class ClinicLoginPage:
     def __init__(self):
         pass
 
     def view(self, page: Page, params: Params, basket: Basket):
-        page.title = "Login Page"
+        page.title = "Clinic Login Page"
         page.window_width = 400
         page.window_height = 850
         page.window_resizable = False
-        
-        email_textfield = TextField(label="Enter E-mail", color="BLACK")
-        password_textfield = TextField(label="Enter Password", password=True, can_reveal_password=True, color="BLACK")
+    
+        email_textField = TextField(label="Enter Email", color="BLACK")
+        password_textField = TextField(label="Enter Password", password=True, can_reveal_password=True, color="BLACK")
 
         def sign_in_clicked(e):
-            email = email_textfield.value
-            password = password_textfield.value
+            email = email_textField.value
+            password = password_textField.value
 
             id_token = authenticate(email, password)
 
             if id_token:
                 user_role = firebaseHelper.getUserRoleByEmail(email)
-                if user_role == 'Patient':
-                    page.go(f"/PatientHomePage/{email}")
+                if user_role == 'Clinic':
+                    status = firebaseHelper.getClinicDataByEmail(email, status)
+                    if status=='approved':
+                        page.go("/ClinicHomePage")
+                    
                 elif user_role == 'Admin':
                     page.go("/AdminPage")
                 
             else:
                 print("Authentication failed. Please check your email and password.")
-            
 
-
-
+        #big container for the white background
         big_container = Container(
             width=400,
             height=750,
@@ -76,12 +76,12 @@ class LoginPage:
                                                 Container(
                                                     margin=margin.symmetric(horizontal=10),
                                                     alignment=alignment.center,
-                                                    content=email_textfield
+                                                    content=email_textField
                                                 ),
                                             Container(
                                                 margin=margin.symmetric(horizontal= 10),
                                                 alignment=alignment.center,
-                                                content=password_textfield
+                                                content=password_textField
                                             )
                                             ])
                                             
@@ -95,40 +95,49 @@ class LoginPage:
                                             margin=margin.only(top=10),
                                             alignment=alignment.center,
                                             content= ElevatedButton("Sign In", bgcolor="#3CDAB4", color="BLACK",
-                                                                    width=100, height=40,on_click=sign_in_clicked)
+                                                                    width=100, height=40, on_click=sign_in_clicked)
                                         ),
                                         Container(
                                             alignment=alignment.center,
                                             content= ElevatedButton("Sign Up", bgcolor="#DA3C45", color="White",
-                                                                    width=100, height=40, on_click=lambda _:page.go("/signUp"))
+                                                                    width=100, height=40, on_click=lambda _:page.go("/ClinicRegistrationPage"))
                                         )
                                     ])
                                 )
                             ])
                                 ),
                                 Container(
-                                    content=Column([
-                                        Container(
-                                            margin=margin.symmetric(vertical=20),
-                                            alignment=alignment.center,
-                                            content=Container(
-                                                    content=(TextButton("Switch to Clinic/Doctor View",on_click=lambda _:page.go("/ClinicLoginPage")))
-                                                )
-                                        )
-                                    ])
+                                    margin=margin.symmetric(vertical=20),
+                                    alignment=alignment.center,
+                                    content=TextButton("Switch to Patient View",on_click=lambda _:page.go("/"))
                                 )   
                             ])
-                        )
+            #Column([
+             #   
+            #])
+        )
 
-        stack = Stack([big_container])
 
+
+        
+
+        # 使用 Stack 包装大容器、文本元素和小容器，以正确的顺序
+        stack = Stack([big_container, 
+                        ])
     
         return View(
-            "/",
+            "/ClinicLoginPage",
             controls=[
                 stack
             ]
         )
+
+    # 将整个 stack 添加到页面
+#     page.add(stack)
+#     page.update()
+
+# if __name__ == '__main__':
+#     ft.app(target=login_page)
 
 
 

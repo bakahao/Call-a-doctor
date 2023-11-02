@@ -2,6 +2,11 @@ import flet
 from flet import *
 from flet_route import Params, Basket
 import os
+from firebaseHelper import *
+from clinic import Clinic
+from request_doctor import RequestDoctor
+from patient import Patient
+import firebaseHelper
 
 class ClinicDetails:
     def __init__(self):
@@ -11,9 +16,17 @@ class ClinicDetails:
             page.window_width=400
             page.window_height=850
             page.window_resizable = False
+            page.title=("Clinic Details Page")
 
-            """text = params.get("text")
-            print(text)"""
+            clinicD = getClinicDictData(params.uid)
+            cli = Clinic()
+            cli.dict_to_clinic(clinicD)
+            
+            clinic_uid = params.uid
+            user_email = params.email
+            user_uid = getUserUIDByEmail(user_email)
+            
+
             big_container = Container(
                 width=400,
                     height=750,
@@ -59,19 +72,55 @@ class ClinicDetails:
                             )
                         ])
             )
+            def yes_option(e):
+
+                try:
+                    req= RequestDoctor(user_email, clinic_uid)
+                    jsonPatient = req.request_to_dict()
+                    firebaseHelper.saveUserRequestDoctorData(user_uid, jsonPatient)
+                    close_dlg(e)
+                except TypeError as e:
+                     print("Only can request doctor a time before admin process your request!")
+                
+
+            def close_dlg(e):
+                dlg_modal.open = False
+                page.update()
+
+
+            dlg_modal = AlertDialog(
+                modal=True,
+                title=Text("Please confirm"),
+                content=Text("Are you sure you want to request a doctor from this clinic?"),
+                actions=[
+                    TextButton("Yes", on_click=yes_option),
+                    TextButton("No", on_click=close_dlg),
+                ],
+                actions_alignment=MainAxisAlignment.END,
+                on_dismiss=lambda e: print("Modal dialog dismissed!"),
+            )
+            
+
+            def open_dlg_modal(e):
+                
+                page.dialog = dlg_modal
+                dlg_modal.open = True
+                page.update()
 
             request_doctor_button = Column([
                  Container(
                     width=150,
                     height=30,
                     margin=margin.only(left=130, top=190),
-                    content=ElevatedButton("Request Doctor", color="BLACK", bgcolor="WHITE")
+                    content=ElevatedButton("Request Doctor", color="BLACK", bgcolor="WHITE",
+                                           on_click=open_dlg_modal)
                  ),
                  Container(
                     width=150,
                     height=30,
                     margin=margin.only(left=130),
-                    content=ElevatedButton("Doctor List", color="BLACK", bgcolor="WHITE")
+                    content=ElevatedButton("Doctor List", color="BLACK", bgcolor="WHITE",
+                                        on_click=lambda _:page.go(f"/DoctorDetails/{clinic_uid}/{user_email}"))
                  )
             ])
             
@@ -79,7 +128,7 @@ class ClinicDetails:
                  width=200,
                  height=70,
                  margin=margin.only(left=130, top=130),
-                 content=Text("Clinic 1", color="black", size=16, style=TextThemeStyle.TITLE_MEDIUM)
+                 content=Text(value=cli.name, color="black", size=16, style=TextThemeStyle.TITLE_MEDIUM)
             )
 
             clinic_rating = Container(
@@ -103,9 +152,11 @@ class ClinicDetails:
                     content=IconButton(
                                         icons.EXIT_TO_APP_ROUNDED,
                                         icon_color="BLACK",
-                                        on_click=lambda _:page.go("/ClinicList")
+                                        on_click=lambda _:page.go("/ClinicList/:email")
                                         )
                 )
+            
+            
             
             review_big_container = Column([
                  Container(
@@ -119,15 +170,25 @@ class ClinicDetails:
                       )
                       )
                  ),
+                 
             ])
 
             review_scroll_bar=Column(
-                spacing=10,
-                height=300,
-                width=345,
-                scroll=ScrollMode.HIDDEN,
-        )
-            
+                            spacing=15,
+                            height=300,
+                            width=345,
+                            scroll=ScrollMode.HIDDEN,
+                    )
+                 
+            for i in range(1, 21):
+                text = f"Review {i}"
+                review_scroll_bar.controls.append(ElevatedButton(text,  key=str(i), width=325, bgcolor="#AFF7E5", color='BLACK'))
+                            
+                        
+            review_small_container = Container(
+                    margin=margin.only(top=390, left=20),
+                    content=review_scroll_bar
+                 )
             
 
 
@@ -139,25 +200,12 @@ class ClinicDetails:
                         clinic_rating_text,
                         request_doctor_button,
                         review_big_container,
-                        
+                        review_small_container
                         ])
             
             return View(
-                "/ClinicDetails",
+                "/ClinicDetails/:uid/:email",
                 controls=[
                     stack
                 ]
             )
-
-"""page.add(stack)
-        page.update()
-
-app(target=clinicList)"""
-
-
-"""return View(
-            "/ClinicDetails",
-            controls=[
-                stack
-            ]
-        )"""

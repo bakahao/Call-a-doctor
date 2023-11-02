@@ -1,6 +1,9 @@
 from flet import *
 from flet_route import Params, Basket
 import os
+from patient import Patient
+import firebaseHelper
+from firebaseHelper import *
 
 class PatientHomePage:
     def __init__(self):
@@ -12,6 +15,8 @@ class PatientHomePage:
         page.window_height = 850
         page.window_resizable = False
 
+        patD = getUserUIDByEmail(params.email)
+        
         #big container for the white background
         big_container = Container(
             width=400,
@@ -61,7 +66,7 @@ class PatientHomePage:
             content=ElevatedButton(
             width=150,
             height=150,
-            on_click=lambda _:page.go("/ClinicList"),
+            on_click=lambda _:page.go(f"/ClinicList/{params.email}"),
             style=ButtonStyle(
                     shape=RoundedRectangleBorder(radius=10),
                     bgcolor="#FFD0D0"
@@ -92,11 +97,12 @@ class PatientHomePage:
             height=150,
             margin=margin.only(left=200, top=150),
             content=ElevatedButton(
+            on_click= lambda _:page.go("/FeedbackPage"),
             width=150,
             height=150,
             style=ButtonStyle(
                     shape=RoundedRectangleBorder(radius=10),
-                    bgcolor="#C5F6BD"
+                    bgcolor="#C5F6BD",
                 ),
             content=Column([
                 Container(
@@ -123,6 +129,7 @@ class PatientHomePage:
             height=150,
             margin=margin.only(left=200, top=330),
             content=ElevatedButton(
+            on_click=lambda _:page.go("/SchedulePage"),
             width=150,
             height=150,
             style=ButtonStyle(
@@ -156,6 +163,7 @@ class PatientHomePage:
             content=ElevatedButton(
             width=150,
             height=150,
+            on_click=lambda _:page.go("/ChatList"),
             style=ButtonStyle(
                     shape=RoundedRectangleBorder(radius=10),
                     bgcolor="#B9F5FD"
@@ -179,6 +187,10 @@ class PatientHomePage:
             
             )
         )
+
+        
+
+        
         stack =Stack([big_container,
                         title_container,
                         title_text_container,
@@ -190,15 +202,8 @@ class PatientHomePage:
                         ])
         
         return View(
-            "/PatientHomePage",
+            "/PatientHomePage/:email",
             controls=[
                 stack
             ]
         )
-
-        """page.add(stack)
-        page.update()
-
-if __name__ == '__main__':
-    app(target=PatientHomePage().view)
-    """

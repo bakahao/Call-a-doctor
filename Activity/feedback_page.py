@@ -1,0 +1,91 @@
+import flet
+from flet import *
+from flet_route import Params, Basket
+import os
+
+class FeedbackPage:
+    def __init__(self):
+        pass
+
+    
+    def view(self, page: Page, params: Params, basket: Basket):
+        page.window_width=400
+        page.window_height=850
+        page.window_resizable = False
+        page.title=("Feedback Page")
+
+        big_container = Container(
+                width=400,
+                height=750,
+                bgcolor="white",
+                border_radius=20,
+                content=Column([
+                    Container(
+                        width=400,
+                        height=100,
+                        bgcolor="#3CDAB4",
+                        border_radius=BorderRadius(
+                        top_left=20,
+                        top_right=20,
+                        bottom_left=50,
+                        bottom_right=50,
+                        ),
+                        content=Container(
+                                margin=margin.only(top=30),
+                                content=Text("Feedback",
+                                color="BLACK",
+                                size=32,
+                                text_align=("CENTER"),
+                                style=TextThemeStyle.TITLE_MEDIUM,
+                                )
+                            )
+                        ),
+                ])
+        )
+
+        small_container = Column([
+            Container(
+                width=330,
+                height=35,
+                #sbgcolor="blue",
+                margin=margin.only(top=120, left=30),
+                content=Text("Waiting for Review", size=24, color="BLACK", style=TextThemeStyle.TITLE_SMALL, weight="BOLD")),
+                Container(
+                    width=330,
+                    height=50,
+                    border_radius=20,
+                    margin=margin.only(left=20),
+                    content=ElevatedButton(bgcolor="#AFF7E5",
+                                           on_click=lambda _:page.go("/RatingPage"),
+                                           content=Container(
+                                            width=330,
+                                            height=50,
+                                            margin=margin.only(top=15),
+                                            content=Text("Clinic 1", text_align=(TextAlign.CENTER, TextAlign.LEFT), color="BLACK",
+                                                        )
+                                                     )
+                    )
+                )
+        ])
+        exit_button_container = Container(
+                width=40,
+                height=40,
+                margin=margin.symmetric(vertical=35, horizontal=10),
+                content=IconButton(
+                                    icons.EXIT_TO_APP_ROUNDED,
+                                    icon_color="BLACK",
+                                    on_click=lambda _:page.go("/PatientHomePage/:email"))
+            )
+
+
+        stack = Stack([
+                big_container,
+                exit_button_container,
+                small_container
+        ])
+        return View(
+            "/FeedbackPage",
+            controls=[
+                stack
+            ]
+        )

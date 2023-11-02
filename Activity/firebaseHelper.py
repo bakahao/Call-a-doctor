@@ -1,6 +1,7 @@
 import firebase_admin
 from firebase_admin import credentials, db, auth
 import os
+from patient import Patient
 from doctor import Doctor
 import requests
 
@@ -35,6 +36,14 @@ def signup(email, password):
         return user.uid
     except:
         return None
+    
+def saveClinicRequestData(uid , clinicRequest):
+    try:
+        ref = db.reference("ClinicRequest")
+        user_ref = ref.child(uid)
+        user_ref.set(clinicRequest)
+    except:
+        print("Error")
 
 #save data to realtime db
 def saveUserData(uid , userDict):
@@ -77,6 +86,38 @@ def getUserSDataByEmail(email, specificPath):
         ref = db.reference("Users")
         uid = getUserUIDByEmail(email)
         user_ref = ref.child(uid)
+        return user_ref.child(specificPath).get()
+    except:
+        print("Error")
+
+def getClinicDataByEmail(email, status):
+    try:
+        ref = db.reference("ClinicRequest")
+        uid = getUserUIDByEmail(email)
+        user_ref = ref.child(uid)
+        return user_ref.child(status).get()
+    except:
+        print("Error")
+
+def getClinicDictData(uid):
+    try:
+        ref = db.reference("ClinicRequest")
+        user_ref = ref.child(uid)
+        return user_ref.get()
+    except:
+        print("Error")
+
+def getClinicDictDataLen():
+    ref = db.reference('ClinicRequest')
+    dictL = ref.get()
+    return dictL
+    #print(len(dictL))
+
+#Update user's specific data. For example, specificDict = {'status' : 'Online'} will update 
+#the user status to online
+def updateClinicDataByEmail(email, specificDict):
+    try:
+        ref = db.reference("ClinicRequest")
        return user_ref.child(specificPath).get()
     except:
         print("Error")
@@ -92,3 +133,36 @@ def updateUserSDataByEmail(email, specificDict):
     except:
         print("Error")
 
+#delete clinic dictionary
+def deleteClinicDataByEmail(email):
+    try:
+        ref = db.reference("ClinicRequest")
+        uid = getUserUIDByEmail(email)
+        user_ref = ref.child(uid)
+        return user_ref.delete()
+    except:
+        print("Error")
+
+def deleteClinic(email):
+    try:
+        uid = getUserUIDByEmail(email)
+        auth.delete_user(uid)
+    except:
+        return None
+    
+def saveUserRequestDoctorData(uid , requestDoctorDict):
+    try:
+        ref = db.reference("PatientRequestDoctor")
+        user_ref = ref.child(uid)
+        user_ref.set(requestDoctorDict)
+    except:
+        print("Error")
+
+def getRequestDoctorUIDByEmail(email):
+    try:
+        user = auth.get_user_by_email(email)
+        return user.uid
+    except:
+        print("Error")
+
+ 
