@@ -2,6 +2,9 @@ import flet
 from flet import *
 from flet_route import Params, Basket
 import os
+from clinic import Clinic
+from patient import Patient
+from firebaseHelper import *
 
 class DoctorDetails:
     def __init__(self):
@@ -12,6 +15,14 @@ class DoctorDetails:
             page.window_height=850
             page.window_resizable = False
             page.title=("Doctor Details Page")
+
+            clinicD = getClinicDictData(params.uid)
+            cli = Clinic()
+            cli.dict_to_clinic(clinicD)
+            
+            clinic_uid = params.uid
+            user_email = params.email
+            user_uid = getUserUIDByEmail(user_email)
 
         
             big_container = Container(
@@ -57,7 +68,7 @@ class DoctorDetails:
                     content=IconButton(
                                         icons.EXIT_TO_APP_ROUNDED,
                                         icon_color="BLACK",
-                                        on_click=lambda _:page.go("/ClinicDetails/:uid/:email")
+                                        on_click=lambda _:page.go(f"/ClinicDetails/{clinic_uid}/{user_email}")
                                         )
                 )
             
@@ -69,21 +80,8 @@ class DoctorDetails:
                         ])
             
             return View(
-                "/DoctorDetails",
+                "/DoctorDetails/:uid/:email",
                 controls=[
                     stack
                 ]
             )
-
-"""page.add(stack)
-        page.update()
-
-app(target=clinicList)"""
-
-
-"""return View(
-            "/ClinicDetails",
-            controls=[
-                stack
-            ]
-        )"""

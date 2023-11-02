@@ -25,15 +25,6 @@ class ClinicDetails:
             clinic_uid = params.uid
             user_email = params.email
             user_uid = getUserUIDByEmail(user_email)
-
-            # req= RequestDoctor(user_email, clinic_uid)
-            # jsonPatient = req.request_to_dict()
-            # firebaseHelper.saveUserRequestDoctorData(user_uid, jsonPatient)
-            
-
-            #uid = getUserUIDByEmail(email)
-            
-
             
 
             big_container = Container(
@@ -129,7 +120,7 @@ class ClinicDetails:
                     height=30,
                     margin=margin.only(left=130),
                     content=ElevatedButton("Doctor List", color="BLACK", bgcolor="WHITE",
-                                        on_click=lambda _:page.go("/DoctorDetails"))
+                                        on_click=lambda _:page.go(f"/DoctorDetails/{clinic_uid}/{user_email}"))
                  )
             ])
             
