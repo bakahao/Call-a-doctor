@@ -2,6 +2,7 @@ import firebase_admin
 from firebase_admin import credentials, db, auth
 import os
 from patient import Patient
+from doctor import Doctor
 import requests
 
 cred = credentials.Certificate(os.getcwd() + "\Activity\serviceAccount.json")
@@ -117,6 +118,15 @@ def getClinicDictDataLen():
 def updateClinicDataByEmail(email, specificDict):
     try:
         ref = db.reference("ClinicRequest")
+       return user_ref.child(specificPath).get()
+    except:
+        print("Error")
+
+#Update user's specific data. For example, specificDict = {'status' : 'Online'} will update 
+#the user status to online
+def updateUserSDataByEmail(email, specificDict):
+    try:
+        ref = db.reference("Users")
         uid = getUserUIDByEmail(email)
         user_ref = ref.child(uid)
         user_ref.update(specificDict)
@@ -155,7 +165,4 @@ def getRequestDoctorUIDByEmail(email):
     except:
         print("Error")
 
-        
-    
-
-
+ 
