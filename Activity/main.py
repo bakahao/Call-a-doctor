@@ -23,17 +23,19 @@ from doctor_home_page import DoctorHomePage
 from medical_report import MedicalReportPage
 from chat import Chat
 from chat_page import ChatPage
-from appoinment import AppoinmentPage
+from appointment import AppoinmentPage
 from clinic_home_page import ClinicHomePage
 from request_page import RequestPage
 from doctorRegistration import DoctorRegistrationPage
+from clinic_add_doctor import ClinicAddDoctorPage
+from clinic_doctor_list import ClinicDoctorListPage
+from clinic_view_request_details import RequestDetailsPage
 
 def main(page: Page):
     
     app_routes = [
         path(url="/", clear=True, view=LoginPage().view),
         path(url="/signUp", clear=True, view=SignUpPage().view),
-
         path(url="/PatientHomePage/:email", clear=False, view=PatientHomePage().view),
         path(url="/ClinicList/:email", clear=False, view=ClinicList().view),
         path(url="/ClinicDetails/:uid/:email", clear=False, view=ClinicDetails().view),
@@ -50,10 +52,13 @@ def main(page: Page):
         path(url="/MedicalReportPage", clear=False, view=MedicalReportPage().view),
         path(url="/Chat", clear=False, view=Chat().view),
         path(url="/ChatPage", clear=False, view=ChatPage().view),
-        path(url="/AppoinmentPage", clear=False, view=AppoinmentPage().view)
-        path(url="/clinicHomePage", clear=False, view=ClinicHomePage().view),
+        path(url="/AppoinmentPage", clear=False, view=AppoinmentPage().view),
+        path(url="/clinicHomePage/:uid", clear=False, view=ClinicHomePage().view),
         path(url="/requestPage", clear=False, view=RequestPage().view),
-        path(url='/doctorRegistration', clear=False, view=DoctorRegistrationPage().view)
+        path(url='/doctorRegistration', clear=False, view=DoctorRegistrationPage().view),
+        path(url='/clinicAddDoctorPage/:name/:email/:password/:phoneNo', clear=False, view=ClinicAddDoctorPage().view),
+        path(url='/clinicDoctorListPage', clear=False, view=ClinicDoctorListPage().view),
+        path(url="/requestDetailsPage/:uid", clear=False, view=RequestDetailsPage().view),
     ]
 
     Routing(page=page, app_routes=app_routes)

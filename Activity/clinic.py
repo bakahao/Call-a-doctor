@@ -3,7 +3,7 @@ import json
 
 class Clinic:
     def __init__(self, name=None, address=None, state=None, city=None, phoneNo=None, operationTime=None, 
-                 clinicType=None, serviceType=None, email=None, role="Clinic", status="pending"):
+                 clinicType=None, serviceType=None, email=None, role="Clinic", status="pending", doctorList = False):
         self.name = name
         self.address = address
         self.state = state
@@ -13,9 +13,9 @@ class Clinic:
         self.clinicType = clinicType
         self.serviceType = serviceType
         self.email = email
-        #self.password = password
         self.role = role
         self.status = status #Approve/pending/reject
+        self.doctorList = doctorList
 
     def clinic_to_dict(self):
         return {
@@ -28,9 +28,9 @@ class Clinic:
             "clinicType" : self.clinicType,
             "serviceType" : self.serviceType,
             "email" : self.email,
-            #"password" : self.password,
             "role" : self.role,
-            "status" : self.status
+            "status" : self.status,
+            "doctorList": self.doctorList
         }
     
     def dict_to_clinic(self, cdict):
@@ -45,3 +45,4 @@ class Clinic:
         self.email = cdict['email']
         self.role = cdict['role']
         self.status = cdict['status']
+        self.doctorList = cdict['doctorList']

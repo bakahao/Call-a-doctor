@@ -2,10 +2,7 @@ import flet
 from flet import *
 from flet_route import Params, Basket
 import os
-import pyrebase
 from functools import partial
-import firebase_admin 
-from firebase_admin import credentials
 from patient import Patient
 import firebaseHelper
 

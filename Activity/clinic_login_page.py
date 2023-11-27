@@ -4,6 +4,8 @@ from flet_route import Params, Basket
 import os
 from firebaseHelper import authenticate
 import firebaseHelper
+from clinic import Clinic
+
 
 class ClinicLoginPage:
     def __init__(self):
@@ -25,11 +27,10 @@ class ClinicLoginPage:
             id_token = authenticate(email, password)
 
             if id_token:
-                user_role = firebaseHelper.getUserRoleByEmail(email)
+                user_role = firebaseHelper.determineClinicDoctorRole(email)
                 if user_role == 'Clinic':
-                    status = firebaseHelper.getClinicDataByEmail(email, status)
-                    if status=='approved':
-                        page.go("/clinicHomePage")
+                    clinicUID = firebaseHelper.getUserUIDByEmail(email)
+                    page.go(f"/clinicHomePage/{clinicUID}")
                 elif user_role == 'Doctor':
                     page.go("/DoctorHomePage")
                     
@@ -133,16 +134,3 @@ class ClinicLoginPage:
                 stack
             ]
         )
-
-    # 将整个 stack 添加到页面
-#     page.add(stack)
-#     page.update()
-
-# if __name__ == '__main__':
-#     ft.app(target=login_page)
-
-
-
-        
-
-

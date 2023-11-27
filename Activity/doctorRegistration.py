@@ -2,6 +2,8 @@ import flet
 from flet import *
 from flet_route import Params, Basket
 import os
+import firebaseHelper
+import clinic_home_page
 
 
 class DoctorRegistrationPage:
@@ -47,50 +49,62 @@ class DoctorRegistrationPage:
             )
         )
 
-        def SignUp_button_clicked(e):
-            print("Sign Up clicked time(s)")
-            page.update()
+        nameTextField = TextField(label="Enter Full Name (Same as IC)", color="BLACK")
+        emailTextField = TextField(label="Enter E-mail", color="BLACK")
+        phoneTextField = TextField(label="Enter phone number", color="BLACK")
+        passwordTextField = TextField(label="Enter password", color="BLACK", password=True, can_reveal_password=True)
 
         nameTextField_Container = Container(
             width=380,
             height=60,
             margin=margin.symmetric(vertical=250, horizontal= 10),
-            content=TextField(label="Enter Full Name (Same as IC)", color="BLACK")
+            content=nameTextField
         )
 
         emailTextField_Container = Container(
             width=380,
             height=60,
             margin=margin.symmetric(vertical=320, horizontal= 10),
-            content=TextField(label="Enter E-mail", color="BLACK")
+            content=emailTextField
         )
 
         phoneTextField_Container = Container(
             width=380,
             height=60,
             margin=margin.symmetric(vertical=390, horizontal= 10),
-            content=TextField(label="Enter phone number", color="BLACK")
+            content=phoneTextField
         )
 
         passwordTextField_Container = Container(
             width=380,
             height=60,
             margin=margin.symmetric(vertical=460, horizontal= 10),
-            content=TextField(label="Enter password", color="BLACK")
+            content=passwordTextField
         )
+
+        def SignUp_button_clicked(e):
+            name = nameTextField.value
+            email = emailTextField.value
+            phoneNo = phoneTextField.value
+            password = passwordTextField.value
+
+            firebaseHelper.signup(email, password)
+            page.go(f"/clinicAddDoctorPage/{name}/{email}/{password}/{phoneNo}")
+
+
 
         SignUp_button = Container(
             width=200,
             height=40,
             margin=margin.symmetric(vertical=530, horizontal=100),
-            content= ElevatedButton("Sign Up", on_click=SignUp_button_clicked, bgcolor="#3CDAB4", color="BLACK")
+            content= ElevatedButton("Next", on_click=SignUp_button_clicked, bgcolor="#3CDAB4", color="BLACK")
         )
 
         cancel_Button = Container(
             width=200,
             height=40,
             margin=margin.symmetric(vertical=590, horizontal=100),
-            content= ElevatedButton("Cancel", on_click=lambda _:page.go("/clinicHomePage"), bgcolor="#F17C7C", color="BLACK")
+            content= ElevatedButton("Cancel", on_click=lambda _:page.go(f"/clinicHomePage/{clinic_home_page.clinicUID}"), bgcolor="#F17C7C", color="BLACK")
         )
 
 
