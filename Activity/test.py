@@ -1,23 +1,17 @@
 import flet as ft
 
-def main(page: ft.Page):
-    def on_column_scroll(e: ft.OnScrollEvent):
-        print(
-            f"Type: {e.event_type}, pixels: {e.pixels}, min_scroll_extent: {e.min_scroll_extent}, max_scroll_extent: {e.max_scroll_extent}"
-        )
+def main(page):
+    def btn_click(e):
+        if not txt_name.value:
+            txt_name.error_text = "Please enter your name"
+            page.update()
+        else:
+            name = txt_name.value
+            page.clean()
+            page.add(ft.Text(f"Hello, {name}!"))
 
-    cl = ft.Column(
-        spacing=10,
-        height=200,
-        width=200,
-        scroll=ft.ScrollMode.ALWAYS,
-        on_scroll=on_column_scroll,
-    )
-    for i in range(0, 50):
-        cl.controls.append(ft.Text(f"Text line {i}", key=str(i)))
+    txt_name = ft.TextField(label="Your name")
 
-    page.add(
-        ft.Container(cl, border=ft.border.all(1)),
-    )
+    page.add(txt_name, ft.ElevatedButton("Say hello!", on_click=btn_click))
 
-ft.app(main)
+ft.app(target=main)
