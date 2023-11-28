@@ -113,37 +113,10 @@ class ClinicHomePage:
             ),
         )
 
-        doctor_status_container = ft.Container(
-            width=400,
-            height=150,
-            margin=margin.symmetric(vertical=430, horizontal=20),
-            bgcolor="#B9F5FD",
-            content=ft.ElevatedButton(
-                bgcolor="#B9F5FD",
-                content = ft.Column([ 
-                    ft.Container(
-                        alignment = alignment.center,
-                        content=ft.Image(
-                            src=os.getcwd() + "/Activity/assets/images/doctor.png",
-                            width=80,
-                            height=80,),
-                        ),
-                    ft.Container(
-                        alignment = alignment.center,
-                        content=ft.Text(value="DOCTOR STATUS", color="Black",text_align="Center", size=24)
-                        ),            
-                    ],
-                        alignment=ft.MainAxisAlignment.CENTER
-                    ),
-                style = ft.ButtonStyle(
-                shape={ft.MaterialState.DEFAULT: RoundedRectangleBorder(radius=0),},),
-            ),
-        )
-
         doctor_registration_container = ft.Container(
             width=400,
             height=150,
-            margin=margin.symmetric(vertical=590, horizontal=20),
+            margin=margin.symmetric(vertical=430, horizontal=20),
             bgcolor="#BCCCE4",
             content=ft.ElevatedButton(
                 bgcolor="#BCCCE4",
@@ -174,7 +147,6 @@ class ClinicHomePage:
                         exit_button_container,
                         request_container,
                         doctor_list_container,
-                        doctor_status_container,
                         doctor_registration_container,
                         ])
 

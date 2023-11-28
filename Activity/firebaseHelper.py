@@ -237,7 +237,7 @@ def getPatientRequest(uid):
     try:
         ref = db.reference("PatientRequestDoctor")
         request_query = ref.get()
-        # Filter requests based on the specified clinic UID
+        # Filter requests based on the specified clinic UID or doctor UID
         filtered_requests = {patient_uid: request_details for patient_uid, request_details in request_query.items() if request_details.get("clinic_uid") == uid}
         return filtered_requests
     except:
@@ -248,6 +248,14 @@ def getSPatientRequest(puid):
         ref = db.reference("PatientRequestDoctor")
         request_details = ref.child(puid)
         return request_details.get()
+    except:
+        print("Error")
+
+def updatePatientRequest(uid, dict):
+    try:
+        ref = db.reference("PatientRequestDoctor")
+        req_ref = ref.child(uid)
+        req_ref.update(dict)
     except:
         print("Error")
 
@@ -274,3 +282,15 @@ def updatePatientRequestDoctor(uid, doctorUID):
         req_ref.update({"doctor_uid": doctorUID})
     except:
         print("Error")
+
+def deleteClinicDoctor(clinicUID, doctorUID):
+    try:
+        userRef = db.reference("Users")
+        clinicRef = db.reference("Clinic")
+
+        userRef.child(doctorUID).delete()
+        clinicRef.child(clinicUID).child("doctorList").child(doctorUID).delete()
+        auth.delete_user(doctorUID)
+        return "The user delete completed"
+    except:
+        return "Something went wrong! :<"

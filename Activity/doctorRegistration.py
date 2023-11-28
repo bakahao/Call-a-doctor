@@ -4,7 +4,8 @@ from flet_route import Params, Basket
 import os
 import firebaseHelper
 import clinic_home_page
-
+import flet as ft
+import re
 
 class DoctorRegistrationPage:
     def __init__(self):
@@ -82,14 +83,56 @@ class DoctorRegistrationPage:
             content=passwordTextField
         )
 
+        def show_error_dlg(errorMessage):
+            error_dlg = ft.AlertDialog(
+                modal=True,
+                title=ft.Text("Error"),
+                content=ft.Text(errorMessage),
+                actions=[
+                    ft.TextButton("Confirm", on_click=lambda _: close_dlg(error_dlg)),
+                ],
+                actions_alignment=ft.MainAxisAlignment.END,
+                #on_dismiss=lambda e: print("Modal dialog dismissed!"),
+                open=False
+            )
+            page.dialog = error_dlg
+            error_dlg.open = True
+            page.update()
+
+        def close_dlg(dlg_modal):
+            page.dialog = dlg_modal
+            dlg_modal.open = False
+            page.update()
+
+
         def SignUp_button_clicked(e):
             name = nameTextField.value
             email = emailTextField.value
             phoneNo = phoneTextField.value
             password = passwordTextField.value
 
-            firebaseHelper.signup(email, password)
-            page.go(f"/clinicAddDoctorPage/{name}/{email}/{password}/{phoneNo}")
+            if (name and email and phoneNo and password):
+                # email format validation using a regular expression
+                if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+                    show_error_dlg("Invalid email format")
+                    return
+
+                # phone number format validation
+                if not (phoneNo.startswith("0") and 10 <= len(phoneNo) <= 11):
+                    show_error_dlg("Invalid phone number format")
+                    return
+
+                # password length validation
+                if len(password) < 6:
+                    show_error_dlg("Password must be at least 6 characters")
+                    return
+                
+                if(firebaseHelper.getUserUIDByEmail(email)):
+                    show_error_dlg("The email has been used!")
+                else:
+                    page.go(f"/clinicAddDoctorPage/{name}/{email}/{password}/{phoneNo}")
+            else:
+                show_error_dlg("All field must be fill")
 
 
 

@@ -6,6 +6,7 @@ import clinic_home_page
 from doctor import Doctor
 import firebaseHelper
 from patient import Patient
+from datetime import datetime, date
 
 class RequestDetailsPage:
     def __init__(self):
@@ -112,7 +113,7 @@ class RequestDetailsPage:
             bsReason.open = True
             bsReason.update()
 
-        def close_bs(e):
+        def close_bs_rej(e):
             if (rejectReasonTextField.value):
                 firebaseHelper.updatePatientRequestStatus(patientUID, 'Rejected')
                 firebaseHelper.updatePatientRequestReason(patientUID, rejectReasonTextField.value)
@@ -124,24 +125,45 @@ class RequestDetailsPage:
                 bsReason.update()
                 show_error_dlg("Please input a reason")
 
+        def closeBS(e):
+            bsReason.open = False
+            bsReason.update()
+
         bsReason = ft.BottomSheet(
             ft.Container(
-                ft.Column(
-                    [
-                        ft.Text("Reject Confirmation", color='Black'),
-                        rejectReasonTextField,
-                        ft.ElevatedButton(
-                            content= ft.Text(
-                                    value='Reject',
-                                    size = 20,
-                                    color = 'Black'
+                height=250,
+                content= ft.Column(
+                        [
+                            ft.Text("Reject Confirmation", color='Black'),
+                            rejectReasonTextField,
+                            ft.Row([
+                                ft.ElevatedButton(
+                                    content=ft.Text(
+                                        value='Reject',
+                                        size = 20,
+                                        color = 'Black'
+                                    ),
+                                    height=40,
+                                    width=130,
+                                    bgcolor='#F17C7C',
+                                    on_click=close_bs_rej
                                 ),
-                                height = 40,
-                                width = 130,
-                                bgcolor = '#F17C7C',
-                                on_click=close_bs)
-                    ]
-                ),
+                                ft.ElevatedButton(
+                                    content=ft.Text(
+                                        value='Cancel',
+                                        size = 20,
+                                        color = 'Black'
+                                    ),
+                                    height = 40,
+                                    width = 130,
+                                    bgcolor = 'Grey',
+                                    on_click=closeBS,
+                                )
+                            ],
+                            alignment=ft.MainAxisAlignment.SPACE_BETWEEN
+                            )
+                        ]
+                    ),
                 padding=10,
                 bgcolor='White'
             ),
@@ -149,12 +171,35 @@ class RequestDetailsPage:
         )
 
         def appoveRequest(e):
-            if (self.selectedDoctor):
+            dateTime = dateTextField.value
+            time = timeTextField.value
+
+            if (self.selectedDoctor and dateTime and time):
+                try:
+                    date_obj = datetime.strptime(dateTime, '%d/%m/%Y')
+                except ValueError:
+                    show_error_dlg("Invalid date format. Please use dd/MM/yyyy.")
+                    return
+                
+                 # Date not before today validation
+                if date_obj.date() < date.today():
+                    show_error_dlg("Invalid date. Please select a date not before today.")
+                    return
+
+                # Time format validation
+                try:
+                    datetime.strptime(time, '%H:%M')
+                except ValueError:
+                    show_error_dlg("Invalid time format. Please use 24hr HH:mm.")
+                    return
+                
+                firebaseHelper.updatePatientRequest(patientUID, {'date': dateTime})
+                firebaseHelper.updatePatientRequest(patientUID, {'time': time})
                 firebaseHelper.updatePatientRequestDoctor(patientUID, self.selectedDoctor)
                 firebaseHelper.updatePatientRequestStatus(patientUID, 'Approved')
                 show_success_dlg("The request approved!")
             else:
-                show_error_dlg("Please select a doctor")
+                show_error_dlg("All field must be fill")
                 
 
         doctorStatus = {}
@@ -183,6 +228,8 @@ class RequestDetailsPage:
             elif (doctorStatus.get(e.control.value) == "Offline"):
                 status.content = Icon(name=icons.CIRCLE_ROUNDED, color="Grey")
 
+            e.control.focus = False
+            e.control.color = 'Black'
             self.selectedDoctor = e.control.value
             page.update()
 
@@ -191,6 +238,7 @@ class RequestDetailsPage:
         phoneTextField = ft.TextField(label="Phone No:", color="BLACK", border_radius=20, bgcolor='white', value=patientDetails.get("phoneNo"), read_only=True)
         symtomsTextField = ft.TextField(label="Symptoms:", color="BLACK", border_radius=20, bgcolor='white', value=requestDetails.get("symptom"),multiline=True , min_lines=1, max_lines=3, read_only=True)
         dateTextField = ft.TextField(label="Date:", color="BLACK", border_radius=20, bgcolor='white', value=requestDetails.get("date"))
+        timeTextField = ft.TextField(label="Time:", color="BLACK", border_radius=20, bgcolor='white', value=requestDetails.get("time"))
         
         patient_request_details = ft.Container(
             width=400,
@@ -226,6 +274,12 @@ class RequestDetailsPage:
                         margin= margin.only(top=5, right = 10, left=10),
                         content=dateTextField,
                     ),
+                ft.Container(
+                         width=380,
+                        height=60,
+                        margin= margin.only(top=5, right = 10, left=10),
+                        content=timeTextField,
+                ),
                     ft.Container(
                         width=380,
                         height=60,
@@ -235,11 +289,12 @@ class RequestDetailsPage:
                                 width=280,
                                 height=60,
                                 content=ft.Dropdown(
+                                    width=280,
                                     label = "Assign Doctor",
                                     hint_text="Assign Doctor",
                                     options=doctorList,
                                     on_change=dropdown_changed,
-                                    color="Black",
+                                    color='Black',
                                 ), 
                             ),
                             status

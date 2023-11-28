@@ -21,6 +21,50 @@ class ClinicAddDoctorPage:
         page.window_height = 850
         page.window_resizable = False
 
+        def show_error_dlg(errorMessage):
+            error_dlg = ft.AlertDialog(
+                modal=True,
+                title=ft.Text("Error"),
+                content=ft.Text(errorMessage),
+                actions=[
+                    ft.TextButton("Confirm", on_click=lambda _: close_dlg(error_dlg)),
+                ],
+                actions_alignment=ft.MainAxisAlignment.END,
+                #on_dismiss=lambda e: print("Modal dialog dismissed!"),
+                open=False
+            )
+            page.dialog = error_dlg
+            error_dlg.open = True
+            page.update()
+
+        def show_success_dlg(successMessage):
+            success_dlg = ft.AlertDialog(
+                modal=True,
+                title=ft.Text("Complete"),
+                content=ft.Text(successMessage),
+                actions=[
+                    ft.TextButton("Confirm", on_click=lambda _: close_dlg_pagego(success_dlg)),
+                ],
+                actions_alignment=ft.MainAxisAlignment.END,
+                #on_dismiss=lambda _: print("Modal dialog dismissed!"),
+                open=False
+            )
+            page.dialog = success_dlg
+            success_dlg.open = True
+            page.update()
+
+        def close_dlg(dlg_modal):
+            page.dialog = dlg_modal
+            dlg_modal.open = False
+            page.update()
+
+        def close_dlg_pagego(dlg_modal):
+            page.dialog = dlg_modal
+            dlg_modal.open = False
+            page.update()
+            page.go(f"/clinicHomePage/{clinic_home_page.clinicUID}")
+
+
         nameTextField = ft.TextField(label="Doctor Name:", color="BLACK", border_radius=20, bgcolor='white', value=params.name, read_only=True)
         departmentTextField = ft.TextField(label="Department:", color="BLACK", border_radius=20, bgcolor='white')
         lengthOfSvcTextField = ft.TextField(label="Length of service(years)", color="BLACK", border_radius=20, bgcolor='white')
@@ -34,11 +78,14 @@ class ClinicAddDoctorPage:
             lenOfSvc = lengthOfSvcTextField.value
             clinic = clinic_home_page.clinicUID
 
-            doctor = Doctor(name, email, phoneNo, department, lenOfSvc, clinic)
-            firebaseHelper.signup(email, password)
-            firebaseHelper.saveUserDataEmail(email, doctor.doctor_to_dict())
-            firebaseHelper.clinicAddDoctor(clinic, email)
-            page.go(f"/clinicHomePage/{clinic_home_page.clinicUID}")
+            if (department and lenOfSvc):
+                doctor = Doctor(name, email, phoneNo, department, lenOfSvc, clinic)
+                firebaseHelper.signup(email, password)
+                firebaseHelper.saveUserDataEmail(email, doctor.doctor_to_dict())
+                firebaseHelper.clinicAddDoctor(clinic, email)
+                show_success_dlg("The doctor registered successfully")
+            else:
+                show_error_dlg("All field must be fill")
 
         form_container = ft.Container(
             bgcolor="#B9F5FD",

@@ -61,40 +61,10 @@ class RequestPage:
         def onRequestClick(e):
             page.go(f"/requestDetailsPage/{e.control.data}")
 
-        def accept_close_dlg(e):
-            dlg_modal.open = False
-            page.go(f"/requestDetailsPage/{dlg_modal.data}")
-
-        def reject_close_dlg(e):
-            dlg_modal.open = False
-            page.update()
-
-        dlg_modal = ft.AlertDialog(
-            modal=True,
-            title=ft.Text("Please confirm"),
-            content=ft.Text("Do you want to accept the request?"),
-            actions=[
-                ft.TextButton("Accept", on_click=accept_close_dlg),
-                ft.TextButton("Reject", on_click=reject_close_dlg),
-            ],
-            actions_alignment=ft.MainAxisAlignment.END,
-            on_dismiss=lambda e: print("Modal dialog dismissed!"),
-        )
-
-        def getDoctors():
-            doctors = []
-            for i in firebaseHelper.getClinicDoctorList(clinic_home_page.clinicUID):
-                doc = Doctor()
-                doc.dict_to_doctor(firebaseHelper.getUserDictData(i))
-                doctors.append(ft.dropdown.Option(key = i, text=doc.name))
-            return doctors
-        
-        doctorList = getDoctors()
-
         def patientRequestList():
             patientRequest = []
             for patientUID, request_details in firebaseHelper.getPatientRequest(clinic_home_page.clinicUID).items():
-                if (request_details.get('status') != 'Rejected'):
+                if (request_details.get('status') != 'Rejected' and request_details.get('status') != 'Approved'):
                     patient = Patient()
                     patient.dict_to_patient(firebaseHelper.getUserDictData(patientUID))
                     patientRequest.append(

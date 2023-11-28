@@ -4,6 +4,7 @@ from flet_route import Params, Basket
 import os
 from firebaseHelper import authenticate
 import firebaseHelper
+import flet as ft
 from clinic import Clinic
 
 
@@ -20,6 +21,28 @@ class ClinicLoginPage:
         email_textField = TextField(label="Enter Email", color="BLACK")
         password_textField = TextField(label="Enter Password", password=True, can_reveal_password=True, color="BLACK")
 
+        def show_error_dlg(errorMessage):
+            error_dlg = ft.AlertDialog(
+                modal=True,
+                title=ft.Text("Error"),
+                content=ft.Text(errorMessage),
+                actions=[
+                    ft.TextButton("Confirm", on_click=lambda _: close_dlg(error_dlg)),
+                ],
+                actions_alignment=ft.MainAxisAlignment.END,
+                #on_dismiss=lambda e: print("Modal dialog dismissed!"),
+                open=False
+            )
+            page.dialog = error_dlg
+            error_dlg.open = True
+            page.update()
+
+        def close_dlg(dlg_modal):
+            page.dialog = dlg_modal
+            dlg_modal.open = False
+            page.update()
+
+
         def sign_in_clicked(e):
             email = email_textField.value
             password = password_textField.value
@@ -33,12 +56,13 @@ class ClinicLoginPage:
                     page.go(f"/clinicHomePage/{clinicUID}")
                 elif user_role == 'Doctor':
                     page.go("/DoctorHomePage")
-                    
                 elif user_role == 'Admin':
                     page.go("/AdminPage")
-                
+                else:
+                    show_error_dlg("Try to login at patient view.")
+
             else:
-                print("Authentication failed. Please check your email and password.")
+                show_error_dlg("Authentication failed. Please check your email and password.")
 
         #big container for the white background
         big_container = Container(
