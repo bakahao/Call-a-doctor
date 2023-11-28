@@ -60,6 +60,30 @@ class RequestDoctorPage:
                 error_dlg_modal.open = True
                 page.update()
 
+            def close_error_dlg(e):
+                success_dlg_modal.open = False
+                req= RequestDoctor(clinic_uid, date.tf.value, date.tf_time.value, status, symptom.value, address.value)
+                jsonReqDoctor = req.request_to_dict()
+                firebaseHelper.saveUserRequestDoctorData(user_uid, jsonReqDoctor)
+                page.update()
+                page.go(f"/ClinicDetails/{clinic_uid}/{user_email}")
+
+            success_dlg_modal = AlertDialog(
+                modal=True,
+                title=Text("Request Successfully."),
+                content=Text("Your Request Sent Successfully"),
+                actions=[
+                TextButton("Okay", on_click=close_error_dlg),
+                ],
+                actions_alignment=MainAxisAlignment.END,
+                on_dismiss=lambda e: print("Modal dialog dismissed!"),
+                )
+            
+            def open_success_dlg_modal(e):
+                page.dialog = success_dlg_modal
+                success_dlg_modal.open = True
+                page.update()
+
             clinicD = getClinicDictData(params.uid)
             cli = Clinic()
 
@@ -82,9 +106,7 @@ class RequestDoctorPage:
                     if not symptom.value or not date.tf.value or not date.tf_time.value or not address.value:
                         open_error_dlg_modal(e)
                     elif getPatientRequestDoctorDictData(user_uid)== None:
-                        req= RequestDoctor(clinic_uid, date.tf.value, date.tf_time.value, status, symptom.value, address.value)
-                        jsonReqDoctor = req.request_to_dict()
-                        firebaseHelper.saveUserRequestDoctorData(user_uid, jsonReqDoctor)
+                        open_success_dlg_modal(e)
                     else:
                         open_dlg_modal(e)
 
