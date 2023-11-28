@@ -70,7 +70,7 @@ class DoctorHomePage:
             page.update()
 
         pb = PopupMenuButton(
-            content=Icon(name=icons.CIRCLE_ROUNDED, color="Green",),
+            content=getUserStatus(),
             items=[
                     PopupMenuItem(text="Status"),
                     PopupMenuItem(content= Row(

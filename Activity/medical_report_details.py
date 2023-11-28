@@ -35,9 +35,8 @@ class MedicalReportDetails:
         def onAaddPrescriptionClick(e):
             page.go(f"/PrescriptionPage/{uid}/{e.control.data}")
 
-        addButton = ElevatedButton("Add Prescription", bgcolor="white", color="black", on_click=onAaddPrescriptionClick)
-
-    
+        addButton = ElevatedButton("Add Prescription", data=patientUID, bgcolor="white", color="black", on_click=onAaddPrescriptionClick)
+        
         medical_report_details = Container(
                             border_radius=20,
                             width=400,
