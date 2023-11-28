@@ -31,14 +31,56 @@ class RatingPage:
         review_textField=TextField(label="Leave a review here", color="BLACK", border_color="black",
                               bgcolor="WHITE", border_radius=30)
         
+        def close_dlg(e):
+                dlg_modal.open = False
+                page.update()
+
+        dlg_modal = AlertDialog(
+                modal=True,
+                title=Text("Review Submit Unsuccessfully"),
+                content=Text("Make sure you fill in the rating values and comments"),
+                actions=[
+                TextButton("Okay", on_click=close_dlg),
+                ],
+                actions_alignment=MainAxisAlignment.END,
+                on_dismiss=lambda e: print("Modal dialog dismissed!"),
+                )
+            
+        def open_dlg_modal(e):
+                page.dialog = dlg_modal
+                dlg_modal.open = True
+                page.update()
+
+        def close__done_dlg(e):
+                done_dlg_modal.open = False
+                page.update()
+
+        done_dlg_modal = AlertDialog(
+                modal=True,
+                title=Text("Review Submit Successfully"),
+                content=Text("Your review was submitted."),
+                actions=[
+                TextButton("Okay", on_click=close__done_dlg),
+                ],
+                actions_alignment=MainAxisAlignment.END,
+                on_dismiss=lambda e: print("Modal dialog dismissed!"),
+                )
+            
+        def open_done_dlg_modal(e):
+                page.dialog = done_dlg_modal
+                done_dlg_modal.open = True
+                page.update()
+
+        
         def doneButton_clicked(e):
             rating_value = rating.value
             content = review_textField.value
             
             try:
-                if (rating_value == None and not content):
-                    print("Please enter rating value")
+                if (rating_value == None or not content):
+                    open_dlg_modal(e)
                 else:
+                    open_done_dlg_modal(e)
                     review = Review(rating_value, content)
                     jsonReview = review.review_to_dict()
                     saveReviewData(clinicUID, user_uid, jsonReview)

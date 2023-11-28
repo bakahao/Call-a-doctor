@@ -16,6 +16,47 @@ class PatientCreateMedicalReportPage:
         page.window_resizable = False
         page.title=("Patient Create Medical Report Page")
 
+        def close_dlg(e):
+                dlg_modal.open = False
+                page.update()
+                page.go(f"/PatientMedicalReportPage/{email}")
+
+        dlg_modal = AlertDialog(
+                modal=True,
+                title=Text("Report Creat Successfully."),
+                content=Text("Your report create successfully."),
+                actions=[
+                TextButton("Okay", on_click=close_dlg),
+                ],
+                actions_alignment=MainAxisAlignment.END,
+                on_dismiss=lambda e: print("Modal dialog dismissed!"),
+                )
+            
+        def open_dlg_modal(e):
+                page.dialog = dlg_modal
+                dlg_modal.open = True
+                page.update()
+
+        def close_error_dlg(e):
+                error_dlg_modal.open = False
+                page.update()
+
+        error_dlg_modal = AlertDialog(
+                modal=True,
+                title=Text("Medical Report Create Fail."),
+                content=Text("Please ensure that all blanks are filed"),
+                actions=[
+                TextButton("Okay", on_click=close_error_dlg),
+                ],
+                actions_alignment=MainAxisAlignment.END,
+                on_dismiss=lambda e: print("Modal dialog dismissed!"),
+                )
+            
+        def open_error_dlg_modal(e):
+                page.dialog = error_dlg_modal
+                error_dlg_modal.open = True
+                page.update()
+
 
         cl = Column(
                     spacing=10,
@@ -40,10 +81,13 @@ class PatientCreateMedicalReportPage:
 
         def confirm_onClick(e):
             try:
-                pMedReport = MedicalReport(gender.value,previousMedicalCondition.value,currentMedicalCondition.value,allergies.value,past_medication.value,
-                                           current_medication.value,present_illness.value)
-                jsonMedReport = pMedReport.report_to_dict()
-                savePatientMedicalReportData(user_uid, jsonMedReport)
+                if not gender.value or not previousMedicalCondition.value or not currentMedicalCondition.value or not allergies.value or not past_medication.value or not current_medication.value or not present_illness.value:
+                    open_error_dlg_modal(e)
+                else:
+                    open_dlg_modal(e)
+                    pMedReport = MedicalReport(gender.value,previousMedicalCondition.value,currentMedicalCondition.value,allergies.value,past_medication.value,current_medication.value,present_illness.value)
+                    jsonMedReport = pMedReport.report_to_dict()
+                    savePatientMedicalReportData(user_uid, jsonMedReport)
             except:
                 print("Error in confirm_onClick medReport")
 

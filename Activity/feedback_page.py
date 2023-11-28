@@ -26,24 +26,16 @@ class FeedbackPage:
 
         try:
             clinicUID = getPatientRequestDoctorDataByEmail(user_email, "clinic_uid")
-            
-        except:
-            print("No request found")
-        
-        try:
             assignedDoctor = getPatientRequestDoctorDataByEmail(user_email, "doctor_uid")
-        except:
-            print("No assigned Doctor")
-
-        try:
-            button_text = Text(getClinicDictData(clinicUID)['name'], color="BLACK")
-            cl.controls.append(Container(
-                        content=ElevatedButton(bgcolor="#AFF7E5", width=400, on_click=lambda _:page.go(f"/RatingPage/{user_email}"),
-                                               content=Container(
-                                                   width=350,
-                                                   content=button_text
-                                               )))
-            )
+            if (assignedDoctor != None):
+                button_text = Text(getClinicDictData(clinicUID)['name'], color="BLACK")
+                cl.controls.append(Container(
+                            content=ElevatedButton(bgcolor="#AFF7E5", width=400, on_click=lambda _:page.go(f"/RatingPage/{user_email}"),
+                                                content=Container(
+                                                    width=350,
+                                                    content=button_text
+                                                )))
+                )
         except:
             print("No review need to rate")
 

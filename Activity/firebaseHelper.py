@@ -69,6 +69,14 @@ def getUserDictData(uid):
     except:
         print("Error")
 
+def getPatientRequestDoctorDictData(uid):
+    try:
+        ref = db.reference("PatientRequestDoctor")
+        user_ref = ref.child(uid)
+        return user_ref.get()
+    except:
+        print("Error in getPatientRequestDoctorDictData")
+
 #Get user's uid by email
 def getUserUIDByEmail(email):
     try:
@@ -115,6 +123,8 @@ def getPatientRequestDoctorDataByEmail(email, specificPath):
     except:
         print("Error")
 
+
+
 def getClinicDictData(uid):
     try:
         ref = db.reference("Clinic")
@@ -138,6 +148,7 @@ def getPatientRequestDoctorDictData(uid):
         return user_ref.get()
     except:
         print("Error in getPatientRequestDoctorDictData")
+
 
 
 def getPrescriptionDictData(uid):
@@ -268,6 +279,14 @@ def updatePatientDoneAppoinmentDataByID(patientUID, specificDict):
             try:
                 ref = db.reference("PatientRequestDoctor")
                 user_ref = ref.child(patientUID)
+                user_ref.update(specificDict)
+            except:
+                print("Error")
+
+def updateClinicRequestDataByID(clinicUID, specificDict):
+            try:
+                ref = db.reference("ClinicRequest")
+                user_ref = ref.child(clinicUID)
                 user_ref.update(specificDict)
             except:
                 print("Error")

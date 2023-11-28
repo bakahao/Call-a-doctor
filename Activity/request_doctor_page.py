@@ -20,6 +20,46 @@ class RequestDoctorPage:
             page.window_resizable = False
             page.title=("Request Doctor For Dental Clinic Details Page")
 
+            def close_dlg(e):
+                dlg_modal.open = False
+                page.update()
+
+            dlg_modal = AlertDialog(
+                modal=True,
+                title=Text("Request doctor fail."),
+                content=Text("You had requested a doctor before. Please wait for the clinic to respond."),
+                actions=[
+                TextButton("Okay", on_click=close_dlg),
+                ],
+                actions_alignment=MainAxisAlignment.END,
+                on_dismiss=lambda e: print("Modal dialog dismissed!"),
+                )
+            
+            def open_dlg_modal(e):
+                page.dialog = dlg_modal
+                dlg_modal.open = True
+                page.update()
+
+            def close_error_dlg(e):
+                error_dlg_modal.open = False
+                page.update()
+
+            error_dlg_modal = AlertDialog(
+                modal=True,
+                title=Text("Request doctor fail."),
+                content=Text("Please ensure that all blanks are filed"),
+                actions=[
+                TextButton("Okay", on_click=close_error_dlg),
+                ],
+                actions_alignment=MainAxisAlignment.END,
+                on_dismiss=lambda e: print("Modal dialog dismissed!"),
+                )
+            
+            def open_error_dlg_modal(e):
+                page.dialog = error_dlg_modal
+                error_dlg_modal.open = True
+                page.update()
+
             clinicD = getClinicDictData(params.uid)
             cli = Clinic()
 
@@ -38,10 +78,16 @@ class RequestDoctorPage:
             date.set_page(page)
             status = 'pending'
             def confirm_clicked(e):
-                try:     
-                    req= RequestDoctor(clinic_uid, date.tf.value, date.tf_time.value, status, symptom.value, address.value)
-                    jsonReqDoctor = req.request_to_dict()
-                    firebaseHelper.saveUserRequestDoctorData(user_uid, jsonReqDoctor)
+                try:
+                    if not symptom.value or not date.tf.value or not date.tf_time.value or not address.value:
+                        open_error_dlg_modal(e)
+                    elif getPatientRequestDoctorDictData(user_uid)== None:
+                        req= RequestDoctor(clinic_uid, date.tf.value, date.tf_time.value, status, symptom.value, address.value)
+                        jsonReqDoctor = req.request_to_dict()
+                        firebaseHelper.saveUserRequestDoctorData(user_uid, jsonReqDoctor)
+                    else:
+                        open_dlg_modal(e)
+
                 except TypeError as e:
                     print("Only can request doctor a time before admin process your request!")
 

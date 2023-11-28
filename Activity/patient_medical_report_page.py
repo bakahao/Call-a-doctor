@@ -24,38 +24,39 @@ class PatientMedicalReportPage:
                 )
         email = params.email
         user_uid = getUserUIDByEmail(email)
-
-        medReportDict = getPatientMedReportDictData(user_uid)
-        userDict = getUserDictData(user_uid)
-        user_name = userDict['name']
-        address = userDict['address']
-        phone = userDict['phoneNo']
-        gender = medReportDict['gender']
-        allergies = medReportDict['allergies']
-        past_med_condition = medReportDict['previous_med_condition']
-        current_med_condition = medReportDict['current_med_condition']
-        past_medication = medReportDict['past_medication']
-        current_medication = medReportDict['current_medication']
-        present_illness = medReportDict['present_illness']
+        try:
+            medReportDict = getPatientMedReportDictData(user_uid)
+            userDict = getUserDictData(user_uid)
+            user_name = userDict['name']
+            address = userDict['address']
+            phone = userDict['phoneNo']
+            gender = medReportDict['gender']
+            allergies = medReportDict['allergies']
+            past_med_condition = medReportDict['previous_med_condition']
+            current_med_condition = medReportDict['current_med_condition']
+            past_medication = medReportDict['past_medication']
+            current_medication = medReportDict['current_medication']
+            present_illness = medReportDict['present_illness']
         
 
-        button_text = Text(f"Patient Name: {user_name}\nAddress: {address}\nPhoneNo: {phone}\nGender: {gender}\nAllergies: {allergies}\nPrevious Medical Condition: {past_med_condition}\nCurrent Medical Condition: {current_med_condition}\nPast Medication: {past_medication}\nCurrent Medication: {current_medication}\nPresent Illness: {present_illness}", 
-                           color="BLACK", size=18)
-        cl.controls.append(Container(
-                        alignment=alignment.center,
-                        content=Container(
-                            width=500,
-                            border_radius=20,
-                            margin=margin.symmetric(horizontal=10),
-                            bgcolor="#AFF7E5",
+            button_text = Text(f"Patient Name: {user_name}\nAddress: {address}\nPhoneNo: {phone}\nGender: {gender}\nAllergies: {allergies}\nPrevious Medical Condition: {past_med_condition}\nCurrent Medical Condition: {current_med_condition}\nPast Medication: {past_medication}\nCurrent Medication: {current_medication}\nPresent Illness: {present_illness}", 
+                            color="BLACK", size=18)
+            cl.controls.append(Container(
+                            alignment=alignment.center,
                             content=Container(
+                                width=500,
+                                border_radius=20,
                                 margin=margin.symmetric(horizontal=10),
-                                content=button_text
-                            )
-                   ))
-                                           
-                    )
-        
+                                bgcolor="#AFF7E5",
+                                content=Container(
+                                    margin=margin.symmetric(horizontal=10),
+                                    content=button_text
+                                )
+                    ))
+                                            
+                        )
+        except:
+            print("No medical report")
         big_container=Container(
                 width=400,
                 height=750,

@@ -321,6 +321,7 @@ class SchedulePage:
                     TextButton("No", on_click=close_dlg),
                     TextButton("Yes", on_click=yes_button_onClick),
                 ],
+                actions_alignment=MainAxisAlignment.END,
             )
             
 

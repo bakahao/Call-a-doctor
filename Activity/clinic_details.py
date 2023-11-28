@@ -82,11 +82,18 @@ class ClinicDetails:
                         
                         ))
                     count += 1
+                
             except:
-                 print("No review found")
+                cRating = Container(
+                           content=Text(f"No Rating", color="black", size=16, style=TextThemeStyle.TITLE_MEDIUM)
+                        )
+                print("No review found")
             
             try:
                 totalRating = totalRating/count
+                cRating = Container(
+                            content=Text(f"{totalRating}/5", color="black", size=16, style=TextThemeStyle.TITLE_MEDIUM)
+                            )
             except:
                  print("Error in totalRating")
 
@@ -144,7 +151,7 @@ class ClinicDetails:
                                                                             content=Text("Rating: ", color="black", size=16, style=TextThemeStyle.TITLE_MEDIUM)
                                                                     ),
                                                                     Container(
-                                                                            content=Text(f"{totalRating}/5", color="black", size=16, style=TextThemeStyle.TITLE_MEDIUM)
+                                                                            content=cRating
                                                                     )
                                                                 ])
                                                             ),
