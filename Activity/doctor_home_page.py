@@ -2,6 +2,7 @@ from flet import *
 from flet_route import Params, Basket
 import os
 import firebaseHelper
+from doctor import Doctor
 
 class DoctorHomePage:
     def __init__(self):
@@ -13,7 +14,39 @@ class DoctorHomePage:
         page.window_height = 850
         page.window_resizable = False
 
-        email ='p21013579@student.newinti.edu.my'
+        def open_dlg_modal(e):
+            page.dialog = dlg_modal
+            dlg_modal.open = True
+            page.go(f"/DoctorHomePage/{uid}")
+            page.update()
+
+        def close_dlg_modal(e):
+            dlg_modal.open = False
+            page.update()
+
+        dlg_modal = AlertDialog(
+            modal = True,
+            title=Text("Please confirm"),
+            content=Text("Do you really want to logout?"),
+            actions=[
+                TextButton("Yes", on_click=open_dlg_modal),
+                TextButton("No", on_click=close_dlg_modal),
+
+                
+        ],
+            actions_alignment=MainAxisAlignment.END,
+            on_dismiss=lambda e: print("Modal dialog dismissed!"),
+        )
+
+        uid = params.uid
+        doctorD = firebaseHelper.getUserDictData(params.uid)
+        doctor = Doctor()
+
+        try:
+            doctor.dict_to_doctor(doctorD)
+            email = doctor.email
+        except TypeError:
+            print("Error: doctorD is None")
 
         def getUserStatus():
             status = firebaseHelper.getUserSDataByEmail(email, 'status')
@@ -23,7 +56,6 @@ class DoctorHomePage:
                 return Icon(name=icons.CIRCLE_ROUNDED, color="Yellow",)
             elif status == 'Offline':
                 return Icon(name=icons.CIRCLE_ROUNDED, color="Red",)
-            
 
         def onPBClick(e):
             if e.control.data == "Online":
@@ -63,7 +95,6 @@ class DoctorHomePage:
                 width=40,
                 height=40,
                 margin=margin.only(top=35, left=300),
-
                 content = pb,
         )
        
@@ -106,10 +137,10 @@ class DoctorHomePage:
             content=IconButton(
                                 icons.EXIT_TO_APP_ROUNDED,
                                 icon_color="BLACK",
-                                on_click=lambda _:page.go("/"))
+                                on_click=open_dlg_modal)
         )
 
-        #CREATE CLINIC LIST BUTTON
+        #CREATE MEDICAL REPORT BUTTON
         medical_report_button =Container(
             width=150,
             height=150,
@@ -117,15 +148,15 @@ class DoctorHomePage:
             content=ElevatedButton(
             width=150,
             height=150,
-            on_click=lambda _:page.go("/MedicalReportPage"),
+            on_click=lambda _:page.go(f"/MedicalReportPage/{uid}"),
             style=ButtonStyle(
                     shape=RoundedRectangleBorder(radius=10),
                     bgcolor="#FFD0D0"
                 ),
             content=Column([
                 Container(
-                width=100,
-                height=80,
+                width=90,
+                height=90,
                 margin=margin.only(top=10, left=10),
                 content=Image(src=os.getcwd()+ "/Activity/assets/images/medical_report.png",
                 width=100,
@@ -136,7 +167,7 @@ class DoctorHomePage:
                     width=150,
                     height=100,
                     margin=margin.only(bottom=50),
-                    content=Text("Medical Report", color="Black", size=17, style=TextThemeStyle.TITLE_MEDIUM,text_align="CENTER")
+                    content=Text(f"Prescription", color="Black", size=15, style=TextThemeStyle.TITLE_MEDIUM,text_align="CENTER")
                     )
                 ]
             )
@@ -144,8 +175,7 @@ class DoctorHomePage:
             )
         )
 
-       
-
+    
         appoinment_button =Container(
             width=150,
             height=150,
@@ -153,7 +183,7 @@ class DoctorHomePage:
             content=ElevatedButton(
             width=150,
             height=150,
-            on_click=lambda _:page.go("/AppoinmentPage"),
+            on_click=lambda _:page.go(f"/AppointmentPage/{uid}"),
             style=ButtonStyle(
                     shape=RoundedRectangleBorder(radius=10),
                     bgcolor="#BCCCE4"
@@ -169,7 +199,7 @@ class DoctorHomePage:
                     width=150,
                     height=30,
                     margin=margin.only(bottom=50),
-                    content=Text("Appoinment", color="Black", size=17, style=TextThemeStyle.TITLE_MEDIUM,text_align="CENTER")
+                    content=Text("Appointment", color="Black", size=15, style=TextThemeStyle.TITLE_MEDIUM,text_align="CENTER")
                     )
                 ]
             ),
@@ -185,7 +215,7 @@ class DoctorHomePage:
             content=ElevatedButton(
             width=150,
             height=150,
-            on_click=lambda _:page.go("/Chat"),
+            on_click=lambda _:page.go(f"/Chat/{uid}"),
             style=ButtonStyle(
                     shape=RoundedRectangleBorder(radius=10),
                     bgcolor="#B9F5FD"
@@ -204,13 +234,46 @@ class DoctorHomePage:
                     width=150,
                     height=30,
                     margin=margin.only(bottom=50),
-                    content=Text("Consultation", color="Black", size=17, style=TextThemeStyle.TITLE_MEDIUM,text_align="CENTER")
+                    content=Text("Consultation", color="Black", size=15, style=TextThemeStyle.TITLE_MEDIUM,text_align="CENTER")
                     )
                 ]
             )
             
             )
         )
+
+        history_button =Container(
+            width=150,
+            height=150,
+            margin=margin.only(left=200, top=330),
+            content=ElevatedButton(
+            on_click=lambda _:page.go(f"/MedicalHistory/{uid}"),
+            width=150,
+            height=150,
+            style=ButtonStyle(
+                    shape=RoundedRectangleBorder(radius=10),
+                    bgcolor="#7FFFD4"
+                ),
+            content=Column([
+                Container(
+                width=90,
+                height=90,
+                margin=margin.only(top=10, left=10),
+                content=Image(src=os.getcwd()+ "/Activity/assets/images/history.png",width=100,height=100),
+                ),
+                Container(
+                    width=150,
+                    height=30,
+                    margin=margin.only(bottom=50),
+                    content=Text("History", color="Black", size=15, style=TextThemeStyle.TITLE_MEDIUM,text_align="CENTER")
+                    )
+                ]
+            ),
+            
+            
+            )
+        )
+
 
         
 
@@ -219,14 +282,14 @@ class DoctorHomePage:
                         title_text_container,
                         exit_button_container,
                         medical_report_button,
-                        
                         appoinment_button,
                         consultation_button,
+                        history_button,
                         avatar_container
                         ])
         
         return View(
-            "/DoctorHomePage",
+            "/DoctorHomePage/:uid",
             controls=[
                 stack
             ]

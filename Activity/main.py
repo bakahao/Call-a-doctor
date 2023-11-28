@@ -23,17 +23,21 @@ from doctor_home_page import DoctorHomePage
 from medical_report import MedicalReportPage
 from chat import Chat
 from chat_page import ChatPage
-from appoinment import AppoinmentPage
+from appointment import AppointmentPage
 from clinic_home_page import ClinicHomePage
 from request_page import RequestPage
 from doctorRegistration import DoctorRegistrationPage
+from prescription import Prescription
+from voice import Voice
+from appointment_details import AppointmentDetails
+from medical_history import MedicalHistory
+from medical_report_details import MedicalReportDetails
 
 def main(page: Page):
     
     app_routes = [
         path(url="/", clear=True, view=LoginPage().view),
         path(url="/signUp", clear=True, view=SignUpPage().view),
-
         path(url="/PatientHomePage/:email", clear=False, view=PatientHomePage().view),
         path(url="/ClinicList/:email", clear=False, view=ClinicList().view),
         path(url="/ClinicDetails/:uid/:email", clear=False, view=ClinicDetails().view),
@@ -46,14 +50,19 @@ def main(page: Page):
         path(url="/ClinicRegistrationPage", clear=False, view=ClinicRegistrationPage().view),
         path(url="/AdminPage", clear=False, view=AdminPage().view),
         path(url="/ClinicRequestDetails/:uid", clear=False, view=ClinicRequestDetails().view),
-        path(url="/DoctorHomePage", clear=False, view=DoctorHomePage().view),
-        path(url="/MedicalReportPage", clear=False, view=MedicalReportPage().view),
-        path(url="/Chat", clear=False, view=Chat().view),
-        path(url="/ChatPage", clear=False, view=ChatPage().view),
-        path(url="/AppoinmentPage", clear=False, view=AppoinmentPage().view)
+        path(url="/DoctorHomePage/:uid", clear=False, view=DoctorHomePage().view),
+        path(url="/MedicalReportPage/:uid", clear=False, view=MedicalReportPage().view),
+        path(url="/Chat/:uid", clear=False, view=Chat().view),
+        path(url="/ChatPage/:uid/:patientUID", clear=False, view=ChatPage().view),
+        path(url="/AppointmentPage/:uid", clear=False, view=AppointmentPage().view),
+        path(url="/AppointmentDetails/:uid/:patientUID", clear=False, view=AppointmentDetails().view),
         path(url="/clinicHomePage", clear=False, view=ClinicHomePage().view),
         path(url="/requestPage", clear=False, view=RequestPage().view),
-        path(url='/doctorRegistration', clear=False, view=DoctorRegistrationPage().view)
+        path(url='/doctorRegistration', clear=False, view=DoctorRegistrationPage().view),
+        path(url='/PrescriptionPage/:uid/:patientUID', clear=False, view=Prescription().view),
+        path(url='/VoicePage/:uid', clear=False, view=Voice().view),
+        path(url='/MedicalHistory/:uid', clear=False, view=MedicalHistory().view),
+        path(url='/MedicalReportDetails/:uid/:patientUID', clear=False, view=MedicalReportDetails().view)
     ]
 
     Routing(page=page, app_routes=app_routes)

@@ -45,6 +45,14 @@ def saveClinicRequestData(uid , clinicRequest):
     except:
         print("Error")
 
+def savePrescriptionData(uid , prescription):
+    try:
+        ref = db.reference("Prescription")
+        user_ref = ref.child(uid)
+        user_ref.set(prescription)
+    except:
+        print("Error")
+
 #save data to realtime db
 def saveUserData(uid , userDict):
     try:
@@ -107,6 +115,23 @@ def getClinicDictData(uid):
     except:
         print("Error")
 
+def getPatientRequestDoctorDictData(uid):
+    try:
+        ref = db.reference("PatientRequestDoctor")
+        user_ref = ref.child(uid)
+        return user_ref.get()
+    except:
+        print("Error")
+
+def getPatientMedicalReportDictData(uid):
+    try:
+        ref = db.reference("PatientMedicalReport")
+        user_ref = ref.child(uid)
+        return user_ref.get()
+    except:
+        print("Error")
+
+
 def getClinicDictDataLen():
     ref = db.reference('ClinicRequest')
     dictL = ref.get()
@@ -118,7 +143,7 @@ def getClinicDictDataLen():
 def updateClinicDataByEmail(email, specificDict):
     try:
         ref = db.reference("ClinicRequest")
-       return user_ref.child(specificPath).get()
+        return ref.child(specificDict).get()
     except:
         print("Error")
 
@@ -129,6 +154,14 @@ def updateUserSDataByEmail(email, specificDict):
         ref = db.reference("Users")
         uid = getUserUIDByEmail(email)
         user_ref = ref.child(uid)
+        user_ref.update(specificDict)
+    except:
+        print("Error")
+
+def updateDoctorDoneAppoinmentDataByID(patientUID, specificDict):
+    try:
+        ref = db.reference("PatientRequestDoctor")
+        user_ref = ref.child(patientUID)
         user_ref.update(specificDict)
     except:
         print("Error")
@@ -162,6 +195,16 @@ def getRequestDoctorUIDByEmail(email):
     try:
         user = auth.get_user_by_email(email)
         return user.uid
+    except:
+        print("Error")
+
+def getPatientRequestDoctor(uid):
+    try:
+        ref = db.reference("PatientRequestDoctor")
+        request_query = ref.get()
+        # Filter requests based on the specified clinic UID
+        filtered_requests = {patient_uid: request_details for patient_uid, request_details in request_query.items() if request_details.get("doctor_uid") == uid}
+        return filtered_requests
     except:
         print("Error")
 
