@@ -2,7 +2,7 @@ from flet import *
 from flet_route import Params, Basket
 import os
 import flet
-from patient import Patient
+from firebaseHelper import *
 
 class ChatPage:
     def __init__(self):
@@ -14,8 +14,10 @@ class ChatPage:
             page.window_height=850
             page.window_resizable = False
 
-            uid = params.uid
-            patientUID = params.patientUID
+            email = params.email
+
+            
+            
 
             type_box_container = Container(
                 width=350,
@@ -49,11 +51,11 @@ class ChatPage:
                 height=50,
                 bgcolor="#3CDAB4",
                 border_radius=20,
-                margin=margin.symmetric(vertical=127, horizontal=50),
-                content= Text("Hi Dr Ng ",color="White",) 
+                margin=margin.symmetric(vertical=145, horizontal=50),
+                content= Text("Wassup Dr Ng ",color="black",) 
             )
                 
-                
+
             #big container for the white background
             big_container = Container(
             width=400,
@@ -83,8 +85,7 @@ class ChatPage:
                             size=32,
                             text_align=("CENTER"),
                             style=TextThemeStyle.TITLE_MEDIUM)
-            )
-
+        )
             exit_button_container = Container(
             width=40,
             height=40,
@@ -92,20 +93,24 @@ class ChatPage:
             content=IconButton(
                                 icons.EXIT_TO_APP_ROUNDED,
                                 icon_color="BLACK",
-                                on_click=lambda _:page.go(f"/Chat/{uid}"))
-            )
-            
+                                on_click=lambda _:page.go(f"/ChatList/{email}"))
+        )
             
             voice_call_button_container = Container(
                 width=40,
-                #height=40,
-                margin=margin.only(top=35, left=300),
+                height=40,
+                margin=margin.symmetric(vertical=35, horizontal=310),
                 content=IconButton(
                                 icons.CALL,
                                 icon_color="BLACK",
-                                on_click=lambda _:page.go(f"/VoicePage/{uid}/{patientUID}"))
+                                on_click=None)
             )
         
+
+
+
+
+
 
             stack =Stack([big_container,
                         title_container,
@@ -119,7 +124,7 @@ class ChatPage:
                         ])
 
             return View(
-            "/ChatPage/:uid/:patientUID",
+            "/PatientChatPage/:email",
             controls=[
                 stack
             ]

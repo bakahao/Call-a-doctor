@@ -4,6 +4,9 @@ from flet_route import Params, Basket
 import os
 from firebaseHelper import authenticate
 import firebaseHelper
+import flet as ft
+from clinic import Clinic
+
 
 class ClinicLoginPage:
     def __init__(self):
@@ -18,6 +21,27 @@ class ClinicLoginPage:
         email_textField = TextField(label="Enter Email", color="BLACK")
         password_textField = TextField(label="Enter Password", password=True, can_reveal_password=True, color="BLACK")
 
+        def show_error_dlg(errorMessage):
+            error_dlg = ft.AlertDialog(
+                modal=True,
+                title=ft.Text("Error"),
+                content=ft.Text(errorMessage),
+                actions=[
+                    ft.TextButton("Confirm", on_click=lambda _: close_dlg(error_dlg)),
+                ],
+                actions_alignment=ft.MainAxisAlignment.END,
+                open=False
+            )
+            page.dialog = error_dlg
+            error_dlg.open = True
+            page.update()
+
+        def close_dlg(dlg_modal):
+            page.dialog = dlg_modal
+            dlg_modal.open = False
+            page.update()
+
+
         def sign_in_clicked(e):
             email = email_textField.value
             password = password_textField.value
@@ -25,19 +49,20 @@ class ClinicLoginPage:
             id_token = authenticate(email, password)
 
             if id_token:
-                user_role = firebaseHelper.getUserRoleByEmail(email)
+                user_role = firebaseHelper.determineClinicDoctorRole(email)
                 if user_role == 'Clinic':
-                    status = firebaseHelper.getClinicDataByEmail(email, status)
-                    if status=='approved':
-                        page.go("/clinicHomePage")
+                    clinicUID = firebaseHelper.getUserUIDByEmail(email)
+                    page.go(f"/clinicHomePage/{clinicUID}")
                 elif user_role == 'Doctor':
-                    page.go("/DoctorHomePage")
-                    
+                    uid = firebaseHelper.getUserUIDByEmail(email)
+                    page.go(f"/DoctorHomePage/{uid}")
                 elif user_role == 'Admin':
                     page.go("/AdminPage")
-                
+                else:
+                    show_error_dlg("Try to login at patient view.")
+
             else:
-                print("Authentication failed. Please check your email and password.")
+                show_error_dlg("Authentication failed. Please check your email and password.")
 
         #big container for the white background
         big_container = Container(
@@ -133,16 +158,3 @@ class ClinicLoginPage:
                 stack
             ]
         )
-
-    # 将整个 stack 添加到页面
-#     page.add(stack)
-#     page.update()
-
-# if __name__ == '__main__':
-#     ft.app(target=login_page)
-
-
-
-        
-
-

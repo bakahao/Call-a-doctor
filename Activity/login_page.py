@@ -4,6 +4,7 @@ from flet_route import Params, Basket
 import os
 from firebaseHelper import authenticate
 import firebaseHelper
+import flet as ft
 
 
 class LoginPage:
@@ -19,6 +20,27 @@ class LoginPage:
         email_textfield = TextField(label="Enter E-mail", color="BLACK")
         password_textfield = TextField(label="Enter Password", password=True, can_reveal_password=True, color="BLACK")
 
+        def show_error_dlg(errorMessage):
+            error_dlg = ft.AlertDialog(
+                modal=True,
+                title=ft.Text("Error"),
+                content=ft.Text(errorMessage),
+                actions=[
+                    ft.TextButton("Confirm", on_click=lambda _: close_dlg(error_dlg)),
+                ],
+                actions_alignment=ft.MainAxisAlignment.END,
+                #on_dismiss=lambda e: print("Modal dialog dismissed!"),
+                open=False
+            )
+            page.dialog = error_dlg
+            error_dlg.open = True
+            page.update()
+
+        def close_dlg(dlg_modal):
+            page.dialog = dlg_modal
+            dlg_modal.open = False
+            page.update()
+
         def sign_in_clicked(e):
             email = email_textfield.value
             password = password_textfield.value
@@ -31,9 +53,12 @@ class LoginPage:
                     page.go(f"/PatientHomePage/{email}")
                 elif user_role == 'Admin':
                     page.go("/AdminPage")
+                else:
+                    show_error_dlg("Try to login at Clinic/Doctor View")
+            
                 
             else:
-                print("Authentication failed. Please check your email and password.")
+                show_error_dlg("Authentication failed. Please check your email and password.")
             
 
 

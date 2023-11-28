@@ -3,11 +3,15 @@ from flet import *
 from flet_route import Params, Basket
 import flet as ft
 
+clinicUID = ''
+
 class ClinicHomePage:
     def __init__(self):
         pass
 
     def view(self, page:ft.Page, params:Params, basket:Basket):
+        global clinicUID
+        clinicUID = params.uid
         page.title = "Clinic Home Page"
         page.window_width = 400
         page.window_height = 850
@@ -49,7 +53,9 @@ class ClinicHomePage:
             margin=margin.symmetric(vertical=35, horizontal=10),
             content=ft.IconButton(
                                 icons.EXIT_TO_APP_ROUNDED,
-                                icon_color="BLACK")
+                                icon_color="BLACK",
+                                on_click=lambda _:page.go("/ClinicLoginPage"))
+
         )
 
         request_container = ft.Container(
@@ -104,40 +110,14 @@ class ClinicHomePage:
                     ),
                 style = ft.ButtonStyle(
                 shape={ft.MaterialState.DEFAULT: RoundedRectangleBorder(radius=0),},),
-            ),
-        )
-
-        doctor_status_container = ft.Container(
-            width=400,
-            height=150,
-            margin=margin.symmetric(vertical=430, horizontal=20),
-            bgcolor="#B9F5FD",
-            content=ft.ElevatedButton(
-                bgcolor="#B9F5FD",
-                content = ft.Column([ 
-                    ft.Container(
-                        alignment = alignment.center,
-                        content=ft.Image(
-                            src=os.getcwd() + "/Activity/assets/images/doctor.png",
-                            width=80,
-                            height=80,),
-                        ),
-                    ft.Container(
-                        alignment = alignment.center,
-                        content=ft.Text(value="DOCTOR STATUS", color="Black",text_align="Center", size=24)
-                        ),            
-                    ],
-                        alignment=ft.MainAxisAlignment.CENTER
-                    ),
-                style = ft.ButtonStyle(
-                shape={ft.MaterialState.DEFAULT: RoundedRectangleBorder(radius=0),},),
+                on_click=lambda _:page.go("/clinicDoctorListPage")
             ),
         )
 
         doctor_registration_container = ft.Container(
             width=400,
             height=150,
-            margin=margin.symmetric(vertical=590, horizontal=20),
+            margin=margin.symmetric(vertical=430, horizontal=20),
             bgcolor="#BCCCE4",
             content=ft.ElevatedButton(
                 bgcolor="#BCCCE4",
@@ -168,12 +148,11 @@ class ClinicHomePage:
                         exit_button_container,
                         request_container,
                         doctor_list_container,
-                        doctor_status_container,
                         doctor_registration_container,
                         ])
 
         return ft.View(
-            "/clinicHomePage",
+            "/clinicHomePage/:uid",
             controls=[
                 stack
             ]

@@ -10,28 +10,10 @@ class ClinicRegistrationPage:
         pass
 
     def view(self, page: Page, params: Params, basket: Basket):
-        page.title = "Clinic Login Page"
+        page.title = "Clinic Registration Page"
         page.window_width = 400
         page.window_height = 850
         page.window_resizable = False
-
-        def sign_up_button_onClick(e):
-            if (not clinic_name.value or not clinic_address.value or not clinic_state.value or not clinic_city.value
-                or not clinic_tel.value or not clinic_operaton_time.value or not clinic_type.value or not clinic_service_type.value
-                or not clinic_email.value or not clinic_password.value):
-                 print("Please fill in all the blanks")
-            else:
-                # role = "Clinic"
-                # status = "pending"
-
-                uid = firebaseHelper.signup(clinic_email.value, clinic_password.value)
-                clinic = Clinic(clinic_name.value, clinic_address.value, clinic_state.value, clinic_city.value,
-                                clinic_tel.value, clinic_operaton_time.value, clinic_type.value, clinic_service_type.value,
-                                clinic_email.value)
-
-                
-                jsonClinic = clinic.clinic_to_dict()
-                firebaseHelper.saveClinicRequestData(uid, jsonClinic)
 
         def close_dlg(e):
                 dlg_modal.open = False
@@ -45,8 +27,6 @@ class ClinicRegistrationPage:
                 actions=[
                     TextButton("Okay", on_click=close_dlg),
                 ],
-                actions_alignment=MainAxisAlignment.END,
-                on_dismiss=lambda e: print("Modal dialog dismissed!"),
             )
             
 
@@ -54,6 +34,22 @@ class ClinicRegistrationPage:
                 page.dialog = dlg_modal
                 dlg_modal.open = True
                 page.update()
+
+        def sign_up_button_onClick(e):
+            if (not clinic_name.value or not clinic_address.value or not clinic_state.value or not clinic_city.value
+                or not clinic_tel.value or not clinic_operaton_time.value or not clinic_type.value or not clinic_service_type.value
+                or not clinic_email.value or not clinic_password.value):
+                print("Please fill in all the blanks")
+            else:
+                uid = firebaseHelper.signup(clinic_email.value, clinic_password.value)
+                clinic = Clinic(clinic_name.value, clinic_address.value, clinic_state.value, clinic_city.value,
+                                clinic_tel.value, clinic_operaton_time.value, clinic_type.value, clinic_service_type.value,
+                                clinic_email.value)
+
+                
+                jsonClinic = clinic.clinic_to_dict()
+                firebaseHelper.saveClinicRequestData(uid, jsonClinic)
+                open_dlg_modal(e)
 
         cl = Column(
             spacing=10,
@@ -87,8 +83,7 @@ class ClinicRegistrationPage:
         clinic_tel = TextField(label="Tel",bgcolor="white",color="black")
         clinic_operaton_time = TextField(label="Operation time for clinic (Hours)",bgcolor="white",color="black")                    
         clinic_type = Dropdown(label="Choose your answer here",options=[
-                        dropdown.Option("Private medical clinic"),
-                        dropdown.Option("Private dental clinic")
+                        dropdown.Option("Private medical clinic")
                         ]
                         )
         clinic_service_type = Dropdown(label="Choose your answer here",

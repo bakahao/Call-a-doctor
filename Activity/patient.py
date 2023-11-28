@@ -2,10 +2,11 @@ import json
 
 
 class Patient:
-    def __init__(self, name=None, email=None, phoneNo=None, role="patient"):
+    def __init__(self, name=None, email=None, phoneNo=None, address=None, role="patient"):
         self.name = name
         self.email = email
         self.phoneNo = phoneNo
+        self.address = address
         self.role = role
 
     def patient_to_dict(self):
@@ -13,6 +14,7 @@ class Patient:
             "name" : self.name,
             "email": self.email,
             "phoneNo": self.phoneNo,
+            "address": self.address,
             "role": self.role
         }
     
@@ -20,6 +22,7 @@ class Patient:
         self.name = pdict['name']
         self.email = pdict['email']
         self.phoneNo = pdict['phoneNo']
+        self.address = pdict['address']
         self.role = pdict['role']
 
     def patient_to_json(self):

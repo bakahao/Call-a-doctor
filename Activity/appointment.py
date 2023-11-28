@@ -2,33 +2,35 @@ import flet
 from flet import *
 from flet_route import Params, Basket
 import os
+import firebaseHelper
+from patient import Patient
+import flet as ft
 
-
-class AppoinmentPage:
+class AppointmentPage:
     def __init__(self):
         pass
         
-   
-
     def view(self, page: Page, params: Params, basket: Basket):
-        page.title = "Appoinment Page"
+        page.title = "Appointment Page"
         page.window_width = 400
         page.window_height = 850
         page.window_resizable = False
 
         def open_dlg_modal(e):
             page.dialog = dlg_modal
-            dlg_modal.open = True
+            dlg_modal.open = False
             page.update()
+            page.go("/Appoinment")
 
         def close_dlg_modal(e):
             dlg_modal.open = False
+            page.go()
             page.update()
 
         dlg_modal = AlertDialog(
             modal = True,
             title=Text("Please confirm"),
-            content=Text("Do you really want to accrpt this appoinment"),
+            content=Text("Do you really want to accept this appoinment"),
             actions=[
                 TextButton("Yes", on_click=close_dlg_modal),
                 TextButton("No", on_click=close_dlg_modal),
@@ -37,7 +39,69 @@ class AppoinmentPage:
             on_dismiss=lambda e: print("Modal dialog dismissed!"),
         )
 
+        uid = params.uid
 
+        def onAppoinmentClick(e):
+            page.go(f"/AppointmentDetails/{uid}/{e.control.data}")
+
+        # Create an elevated button for appoinment
+        def createAppointmentButton():
+            appoinmentButton=[]
+            for patientUID, request_details in firebaseHelper.getPatientRequestDoctor(uid).items():
+                firebaseHelper.getUserDictData(patientUID)
+                patient = Patient()
+                patient.dict_to_patient(firebaseHelper.getUserDictData(patientUID))  
+                name = patient.name
+                phone = patient.phoneNo
+                email = patient.email
+                date = firebaseHelper.getPatientRequestDoctorDictData(patientUID)['date']
+                time = firebaseHelper.getPatientRequestDoctorDictData(patientUID)['time']
+
+                if firebaseHelper.getPatientRequestDoctorDictData(patientUID)['status'] == 'Approved':
+                    appoinmentButton.append(
+                        Container(
+                            border_radius=20,
+                            width=400,
+                            bgcolor="#3CDAB4",
+                            on_click=onAppoinmentClick,
+                            data=patientUID,
+                            padding=10,
+                            content=ft.Column([
+                                    ft.Container(
+                                        alignment=alignment.top_left,
+                                        content=ft.Text(
+                                            value="Patient Name: " + name, color="Black", text_align="Left", size=16
+                                        ) 
+                                    ),
+                                    ft.Container(
+                                        alignment=alignment.bottom_left,
+                                        content=ft.Text(
+                                            value="Date: " +  date, color="Black", text_align="Left", size=16
+                                        )
+                                    ),
+                                    ft.Container(
+                                        alignment=alignment.bottom_left,
+                                        content=ft.Text(
+                                            value="Time: " + time, color="Black", text_align="Left", size=16
+                                        )
+                                    ),
+                            ],
+                            spacing=1,
+                            horizontal_alignment=ft.CrossAxisAlignment.START,
+                            )
+                        )
+                    )
+                    
+            return appoinmentButton
+            
+        appoinment_button_list_row = ft.Container(
+            width=400,
+            margin=margin.symmetric(vertical=110, horizontal=20),
+            content=ft.Column(
+                createAppointmentButton(),
+                spacing=10,
+            )
+        )
 
         #big container for the white background
         big_container = Container(
@@ -65,85 +129,16 @@ class AppoinmentPage:
             #width=150,
             #height=60,
             margin=margin.symmetric(horizontal=130, vertical=35),
-            content=Text("Appoinment",
+            content=Text("Appointment",
                             color="BLACK",
-                            size=18,
+                            size=16,
                             text_align=("CENTER"),
                             style=TextThemeStyle.TITLE_MEDIUM)
         )
         
-        exit_button_container = Container(
-            width=40,
-            height=40,
-            margin=margin.symmetric(vertical=35, horizontal=10),
-            content=IconButton(
-                                icons.EXIT_TO_APP_ROUNDED,
-                                icon_color="BLACK",
-                                on_click=lambda _:page.go("/"))
-        )
-
-        patient_list = Container(
-            width=350,
-            height=200,
-            bgcolor="#AFF7E5",
-            border_radius=30,
-            margin=margin.only(top=110, left=10),
-            # margin=margin.symmetric(horizontal=10),
-            content=Column([
-                Container(
-                width=100,
-                height=100,
-                margin=margin.only(top=50, left=10),
-                content=Image(
-                        src=os.getcwd()+ "/Activity/assets/images/profile.png",
-                                                        )
-                                                        
-                                                ),
-                                        
-                                        ])
-
-                
-                                )
-                            
-                
-
-        patient_name = Container(
-                    width=200,
-                    height=70,
-                    margin=margin.only(left=130, top=160),
-                    content=Text("Patient Name: cf", color="black", size=16, style=TextThemeStyle.TITLE_MEDIUM)
-                )
-
-        patient_condition = Container(
-                    width=200,
-                    height=70,
-                    margin=margin.only(left=130, top=180),
-                    content=Text("Appoinment Date: ", color="black", size=16, style=TextThemeStyle.TITLE_MEDIUM)
-                )
-
-        accept_appoinment_button = Column([
-                    Container(
-                        width=200,
-                        height=30,
-                        margin=margin.only(left=130, top=220),
-                        content=ElevatedButton("Accept", color="BLACK", bgcolor="WHITE", on_click=open_dlg_modal)
-                    ),
-                    
-                ])
         
-        reject_appoinment_button = Column([
-                    Container(
-                        width=200,
-                        height=30,
-                        margin=margin.only(left=130, top=260),
-                        content=ElevatedButton("Reject", color="BLACK", bgcolor="WHITE", on_click=close_dlg_modal)
-                    ),
-                    
-                ])
-                
-            
 
-
+       
         exit_button_container = Container(
                         width=40,
                         height=40,
@@ -151,39 +146,25 @@ class AppoinmentPage:
                         content=IconButton(
                                             icons.EXIT_TO_APP_ROUNDED,
                                             icon_color="BLACK",
-                                            on_click=lambda _:page.go("/ClinicList")
+                                            on_click=lambda _:page.go(f"/DoctorHomePage/{uid}")
                                             )
                     )
-        
-       
-                
-
+    
         stack = Stack([big_container,
                     title_container,
                     title_text_container,
-                    patient_list,
-
-                        exit_button_container,
-                        patient_name,
-                        patient_condition,
-                        accept_appoinment_button,
-                        reject_appoinment_button
-                        
-                        
-
-                            
+                    appoinment_button_list_row,
+                    exit_button_container,
+                    
+                         
                             
         ])
         
        
-
-
-
-        
-                
         return View(
-            "/AppoinmentPage",
+            "/AppointmentPage/:uid",
             controls=[
             stack
         ]
     )
+
