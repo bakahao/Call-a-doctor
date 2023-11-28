@@ -46,3 +46,4 @@ class Clinic:
         self.role = cdict['role']
         self.status = cdict['status']
         self.doctorList = cdict['doctorList']
+

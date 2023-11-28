@@ -43,6 +43,13 @@ def saveClinicRequestData(uid , clinicRequest):
     except:
         print("Error")
 
+def savePatientMedicalReportData(uid , medicalReport):
+    try:
+        ref = db.reference("PatientMedicalReport")
+        user_ref = ref.child(uid)
+        user_ref.set(medicalReport)
+    except:
+        print("Error in savePatientMedicalReportData")
 #save data to realtime db
 def saveUserData(uid , userDict):
     try:
@@ -76,6 +83,14 @@ def getUserDictData(uid):
         return user_ref.get()
     except:
         print("Error")
+
+def getPatientRequestDoctorDictData(uid):
+    try:
+        ref = db.reference("PatientRequestDoctor")
+        user_ref = ref.child(uid)
+        return user_ref.get()
+    except:
+        print("Error in getPatientRequestDoctorDictData")
 
 #Get user's uid by email
 def getUserUIDByEmail(email):
@@ -127,13 +142,49 @@ def getClinicSDataByEmail(email, specificPath):
     except:
         print("Error")
 
+def getPatientRequestDoctorDataByEmail(email, specificPath):
+    try:
+        ref = db.reference("PatientRequestDoctor")
+        uid = getUserUIDByEmail(email)
+        user_ref = ref.child(uid)
+        return user_ref.child(specificPath).get()
+    except:
+        print("Error")
+
+
+
 def getClinicDictData(uid):
     try:
         ref = db.reference("Clinic")
         user_ref = ref.child(uid)
         return user_ref.get()
     except:
-        print("Error")
+        print("Error in getClinicDictData")
+
+def getPatientMedReportDictData(uid):
+    try:
+        ref = db.reference("PatientMedicalReport")
+        user_ref = ref.child(uid)
+        return user_ref.get()
+    except:
+        print("Error in getPatientMedReportDictData")
+
+def getPatientRequestDoctorDictData(uid):
+    try:
+        ref = db.reference("PatientRequestDoctor")
+        user_ref = ref.child(uid)
+        return user_ref.get()
+    except:
+        print("Error in getPatientRequestDoctorDictData")
+
+def getPrescriptionDictData(uid):
+    try:
+        ref = db.reference("Prescription")
+        user_ref = ref.child(uid)
+        return user_ref.get()
+    except:
+        print("Error in getPrescriptionDictData")
+
 
 def getClinicRDictData(uid):
     try:
@@ -142,12 +193,30 @@ def getClinicRDictData(uid):
         return user_ref.get()
     except:
         print("Error")
+    
+def getReviewDictData(clinic_uid, user_uid):
+    try:
+        ref = db.reference("Review")
+        user_ref = ref.child(clinic_uid).child(user_uid)
+        return user_ref.get()
+    except:
+        print("Error in getReviewDictData")
 
-def getClinicDictDataLen():
-    ref = db.reference('Clinic')
+
+
+def getClinicDoctorListUID(uid):
+    try:
+        ref = db.reference("Clinic")
+        user_ref = ref.child(uid).child('doctorList')
+        return user_ref.get()
+    except:
+        print("Error in getClinicDoctorListUID")
+
+
+def getClinicRDictDataLen():
+    ref = db.reference('ClinicRequest')
     dictL = ref.get()
     return dictL
-    #print(len(dictL))
 
 #Update user's specific data. For example, specificDict = {'status' : 'Online'} will update 
 #the user status to online
@@ -160,6 +229,22 @@ def updateClinicDataByEmail(email, specificDict):
     except:
         print("Error")
 
+def getPatientRequestDoctorDataLen():
+    ref = db.reference('PatientRequestDoctor')
+    dictL = ref.get()
+    return dictL
+
+def getReviewDataLenByUID(clinicUID):
+    ref = db.reference('Review').child(clinicUID)
+    dictL = ref.get()
+    return dictL
+
+
+def getClinicDoctorDataLenByUID(uid):
+    ref = db.reference('Clinic').child(uid).child('doctorList')
+    dictL = ref.get()
+    return dictL
+
 #Update user's specific data. For example, specificDict = {'status' : 'Online'} will update 
 #the user status to online
 def updateUserSDataByEmail(email, specificDict):
@@ -170,6 +255,15 @@ def updateUserSDataByEmail(email, specificDict):
         user_ref.update(specificDict)
     except:
         print("Error")
+
+def updateClinicDataByEmail(email, specificDict):
+    try:
+        ref = db.reference("ClinicRequest")
+        uid = getUserUIDByEmail(email)
+        user_ref = ref.child(uid)
+        user_ref.update(specificDict)
+    except:
+        print("Error in updateClinicDataByEmail")
 
 #delete clinic dictionary
 def deleteClinicDataByEmail(email):
@@ -194,14 +288,40 @@ def saveUserRequestDoctorData(uid , requestDoctorDict):
         user_ref = ref.child(uid)
         user_ref.set(requestDoctorDict)
     except:
-        print("Error")
+        print("Error in saveUserRequestDoctorData")
 
-def getRequestDoctorUIDByEmail(email):
+def saveClinicData(uid, requestClinicRequestDict):
     try:
-        user = auth.get_user_by_email(email)
-        return user.uid
+        ref = db.reference("Clinic")
+        user_ref = ref.child(uid)
+        user_ref.set(requestClinicRequestDict)
     except:
-        print("Error")
+        print("Error in saveClinicData()")
+
+def saveReviewData(clinic_uid,user_uid, requestReviewDict):
+    try:
+        ref = db.reference("Review")
+        user_ref = ref.child(clinic_uid).child(user_uid)
+        user_ref.set(requestReviewDict)
+    except:
+        print("Error in saveReviewData()")
+
+def updatePatientDoneAppoinmentDataByID(patientUID, specificDict):
+            try:
+                ref = db.reference("PatientRequestDoctor")
+                user_ref = ref.child(patientUID)
+                user_ref.update(specificDict)
+            except:
+                print("Error")
+
+def updateClinicRequestDataByID(clinicUID, specificDict):
+            try:
+                ref = db.reference("ClinicRequest")
+                user_ref = ref.child(clinicUID)
+                user_ref.update(specificDict)
+            except:
+                print("Error")
+
 
 def getClinicSDataUID(uid, specificPath):
     try:

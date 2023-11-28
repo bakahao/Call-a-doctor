@@ -11,34 +11,48 @@ class ClinicRequestDetails:
         pass
      
      def view(self, page: Page, params: Params, basket: Basket):
-        page.title = "Login Page"
+        page.title = "Clinic Request Details Page"
         page.window_width = 400
         page.window_height = 850
         page.window_resizable = False
 
-        print(params.uid)
 
-        clinicD = getClinicDictData(params.uid)
+        clinicD = getClinicRDictData(params.uid)
         cli = Clinic()
-        cli.dict_to_clinic(clinicD)
 
-        def approve_button_on_clicked(e):
-            firebaseHelper.updateClinicDataByEmail(cli.email, {'status':'approved'})
+        try:
+            cli.dict_to_clinic(clinicD)
+        except TypeError:
+            print("Error: clinicD is None")
 
-        def reject_button_on_clicked(e):
-            firebaseHelper.deleteClinicDataByEmail(cli.email)
-            deleteClinic(cli.email)
+        # def reject_button_on_clicked(e):
+        #     firebaseHelper.deleteClinicDataByEmail(cli.email)
+        #     deleteClinic(cli.email)
             
         def close_dlg(e):
             dlg_modal.open = False
-            page.go("/AdminPage")
+            firebaseHelper.updateClinicDataByEmail(cli.email, {'status':'approved'})
+
+            clinicLengeth = getClinicRDictDataLen()
+            try:
+                for i in clinicLengeth:
+                    clinicD = getClinicRDictData(i)
+                    cli.dict_to_clinic(clinicD)
+                    if cli.status == 'approved':
+                        saveClinicData(i, clinicD)
+                        firebaseHelper.deleteClinicDataByEmail(cli.email)
+            except:
+                print("Error in update clinic")
+
             page.update()
 
         def close_reject_dlg(e):
+            firebaseHelper.deleteClinicDataByEmail(cli.email)
+            deleteClinic(cli.email)
             reject_dlg_modal.open = False
-            page.go("/AdminPage")
             page.update()
 
+        
         dlg_modal = AlertDialog(
         modal=True,
         title=Text("Note"),
@@ -71,13 +85,6 @@ class ClinicRequestDetails:
             reject_dlg_modal.open = True
             page.update()
 
-        def wrapped_approve(e):
-            approve_button_on_clicked(e)
-            open_dlg_modal(e)
-
-        def wrapped_reject(e):
-            reject_button_on_clicked(e)
-            open_reject_dlg_modal(e)
 
         cl = Column(
             spacing=10,
@@ -183,12 +190,12 @@ class ClinicRequestDetails:
                                 Container(
                                 width=120,
                                 content=ElevatedButton("Approve", color="BLACK", bgcolor="#AFF7E5", height=50,
-                                                       on_click=wrapped_approve, data="approved")
+                                                       on_click=open_dlg_modal, data="approved")
                             ),
                             Container(
                                 width=120,
                                 content=ElevatedButton("Reject", color="WHITE", bgcolor="#DA3C45", height=50,
-                                                       on_click=wrapped_reject)
+                                                       on_click=open_reject_dlg_modal)
                             ),
             
                             ])

@@ -55,6 +55,7 @@ class ClinicHomePage:
                                 icons.EXIT_TO_APP_ROUNDED,
                                 icon_color="BLACK",
                                 on_click=lambda _:page.go("/ClinicLoginPage"))
+
         )
 
         request_container = ft.Container(

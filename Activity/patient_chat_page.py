@@ -2,6 +2,7 @@ from flet import *
 from flet_route import Params, Basket
 import os
 import flet
+from firebaseHelper import *
 
 class ChatPage:
     def __init__(self):
@@ -12,6 +13,11 @@ class ChatPage:
             page.window_width=400
             page.window_height=850
             page.window_resizable = False
+
+            email = params.email
+
+            
+            
 
             type_box_container = Container(
                 width=350,
@@ -45,14 +51,10 @@ class ChatPage:
                 height=50,
                 bgcolor="#3CDAB4",
                 border_radius=20,
-                margin=margin.symmetric(vertical=127, horizontal=50),
-                content= Text("Wassup Dr Ng ",color="White",) 
+                margin=margin.symmetric(vertical=145, horizontal=50),
+                content= Text("Wassup Dr Ng ",color="black",) 
             )
                 
-                
-                
-             
-            
 
             #big container for the white background
             big_container = Container(
@@ -91,7 +93,7 @@ class ChatPage:
             content=IconButton(
                                 icons.EXIT_TO_APP_ROUNDED,
                                 icon_color="BLACK",
-                                on_click=lambda _:page.go("/"))
+                                on_click=lambda _:page.go(f"/ChatList/{email}"))
         )
             
             voice_call_button_container = Container(
@@ -101,7 +103,7 @@ class ChatPage:
                 content=IconButton(
                                 icons.CALL,
                                 icon_color="BLACK",
-                                on_click=lambda _:page.go("/DoctorHomePage"))
+                                on_click=None)
             )
         
 
@@ -122,7 +124,7 @@ class ChatPage:
                         ])
 
             return View(
-            "/ChatPage",
+            "/PatientChatPage/:email",
             controls=[
                 stack
             ]
