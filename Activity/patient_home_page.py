@@ -14,8 +14,6 @@ class PatientHomePage:
         page.window_width = 400
         page.window_height = 850
         page.window_resizable = False
-
-        patD = getUserUIDByEmail(params.email)
         
         #big container for the white background
         big_container = Container(
@@ -97,7 +95,7 @@ class PatientHomePage:
             height=150,
             margin=margin.only(left=200, top=150),
             content=ElevatedButton(
-            on_click= lambda _:page.go("/FeedbackPage"),
+            on_click= lambda _:page.go(f"/FeedbackPage/{params.email}"),
             width=150,
             height=150,
             style=ButtonStyle(
@@ -129,7 +127,7 @@ class PatientHomePage:
             height=150,
             margin=margin.only(left=200, top=330),
             content=ElevatedButton(
-            on_click=lambda _:page.go("/SchedulePage"),
+            on_click=lambda _:page.go(f"/SchedulePage/{params.email}"),
             width=150,
             height=150,
             style=ButtonStyle(
@@ -163,7 +161,7 @@ class PatientHomePage:
             content=ElevatedButton(
             width=150,
             height=150,
-            on_click=lambda _:page.go("/ChatList"),
+            on_click=lambda _:page.go(f"/ChatList/{params.email}"),
             style=ButtonStyle(
                     shape=RoundedRectangleBorder(radius=10),
                     bgcolor="#B9F5FD"
@@ -188,6 +186,70 @@ class PatientHomePage:
             )
         )
 
+        prescription_button =Container(
+            width=150,
+            height=150,
+            margin=margin.symmetric(vertical=510, horizontal=20),
+            content=ElevatedButton(
+            width=150,
+            height=150,
+            on_click=lambda _:page.go(f"/PatientPrescriptionPage/{params.email}"),
+            style=ButtonStyle(
+                    shape=RoundedRectangleBorder(radius=10),
+                    bgcolor="#FCFDC9"
+                ),
+            content=Column([
+                Container(
+                width=90,
+                height=90,
+                margin=margin.only(top=10, left=10),
+                content=Image(src=os.getcwd()+ "/Activity/assets/images/prescription.png",width=100,height=100),
+                ),
+                Container(
+                    width=160,
+                    height=30,
+                    margin=margin.only(bottom=50),
+                    content=Text("Prescription", color="Black", size=18, style=TextThemeStyle.TITLE_MEDIUM,text_align="CENTER")
+                    )
+                ]
+            ),
+            
+            
+            )
+        )
+
+        medicalReport_button =Container(
+            width=150,
+            height=150,
+            margin=margin.only(top=510, left=200),
+            content=ElevatedButton(
+            width=150,
+            height=150,
+            on_click=lambda _:page.go(f"/PatientMedicalReportPage/{params.email}"),
+            style=ButtonStyle(
+                    shape=RoundedRectangleBorder(radius=10),
+                    bgcolor="#AFECFF"
+                ),
+            content=Column([
+                Container(
+                width=70,
+                height=70,
+                margin=margin.only(top=10, left=10),
+                content=Image(src=os.getcwd()+ "/Activity/assets/images/medical_report.png",width=100,height=100),
+                ),
+                Container(
+                    width=150,
+                    height=70,
+                    margin=margin.only(bottom=50),
+                    content=Text("Medical Report", color="Black", size=20, style=TextThemeStyle.TITLE_MEDIUM,text_align="CENTER")
+                    )
+                ]
+            ),
+            
+            
+            )
+        )
+
         
 
         
@@ -198,7 +260,9 @@ class PatientHomePage:
                         clinic_list_button,
                         feedback_button,
                         schedule_button,
-                        chat_button
+                        chat_button,
+                        prescription_button,
+                        medicalReport_button
                         ])
         
         return View(

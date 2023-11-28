@@ -3,6 +3,7 @@ from flet import *
 import calendar
 import datetime
 from flet_route import Params, Basket
+from firebaseHelper import *
 
 CELL_SIZE = (28, 28)
 CELL_BG_COLOR = "WHITE10"
@@ -277,7 +278,6 @@ class BTNPagination(UserControl):
             )
         )
 
-
 class SchedulePage:
     def __init__(self):
         pass
@@ -288,9 +288,75 @@ class SchedulePage:
         page.window_resizable = False
         page.title=("Schedule Page")
 
+        user_email = params.email
+
         cal = SetCalendar()
         date = DateSetUp(cal)
 
+       
+
+        cl = Column(
+                    spacing=10,
+                    height=250,
+                    width=380,
+                    scroll=ScrollMode.AUTO,
+                )
+        user_uid = getUserUIDByEmail(user_email)
+
+        def yes_button_onClick(e):
+                updatePatientDoneAppoinmentDataByID(user_uid,{"patient_done_appointment":True})
+                page.update()
+                close_dlg(e)
+                
+
+        def close_dlg(e):
+                dlg_modal.open = False
+                page.update()
+
+        dlg_modal = AlertDialog(
+                modal=True,
+                title=Text("Notice"),
+                content=Text("Are you sure you want to mark the appointment as done?"),
+                actions=[
+                    TextButton("No", on_click=close_dlg),
+                    TextButton("Yes", on_click=yes_button_onClick),
+                ],
+                actions_alignment=MainAxisAlignment.END,
+            )
+            
+
+        def open_dlg_modal(e):
+                page.dialog = dlg_modal
+                dlg_modal.open = True
+                page.update()
+
+        try:
+            
+            pdict = getPatientRequestDoctorDictData(user_uid)
+            cdict = getClinicDictData(pdict['clinic_uid'])
+            ddict = getUserDictData(pdict['doctor_uid'])
+
+            
+
+
+            if (pdict['status'] == "Approved"):
+                if 'patient_done_appointment' not in pdict:
+                    clinic_name = cdict['name']
+                    avlb_date = pdict['date']
+                    avlb_time = pdict['time']
+                    doctor_name = ddict['name']
+
+                    rmd_text = Text(f"Appointment Date: {avlb_date}\nTime: {avlb_time}\nAppointment with Dr.{doctor_name} from {clinic_name}", color="BLACK")
+                    cl.controls.append(Container(
+                                content=ElevatedButton(bgcolor="#AFF7E5",
+                                                    on_click=open_dlg_modal,
+                                                        content=Container(
+                                                            content=rmd_text
+                                                    ))
+                                                    ))
+        except:
+            print("Error in schedule")
+            
         big_container = Container(
                 width=400,
                 height=750,
@@ -308,7 +374,7 @@ class SchedulePage:
                         bottom_right=50,
                         ),
                         content=Container(
-                                margin=margin.only(top=30),
+                            alignment=alignment.center,
                                 content=Text("Schedule",
                                 color="BLACK",
                                 size=32,
@@ -317,53 +383,36 @@ class SchedulePage:
                                 )
                             )
                         ),
-                ])
-        )  
-
-        cal_container = Container(
-            width=320,
-            height=450,
-            #bgcolor="grey",
-            margin=margin.only(top=110, left=30),
-            content=Column([
-                date,
-                Container(
-                    width=320,
-                    height=300,
-                    #wbgcolor="red",
-                    content=Column([
                         Container(
-                            width=300,
-                            height=50,
-                            #bgcolor="blue",
-                            content=Text("Reminder", size=32, color="BLACK",
-                                         style=TextThemeStyle.TITLE_SMALL, weight="BOLD")
-                        ),
-                        Container(
-                            width=320,
-                            height=60,
-                            bgcolor="#AFF7E5",
-                            border_radius=30,
+                            width=400,
+                            margin=margin.symmetric(horizontal=20),
+                            alignment=alignment.center,
                             content=Column([
                                 Container(
-                                    width=300,
-                                    #bgcolor="blue",
-                                    margin=margin.only(left=20,top=5),
+                                    content=date
+                                ),
+                                
+                                Container(
                                     content=Column([
-                                        Text("11 Nov 2023\n0800\nAppoinment with Dr. Yuh Choong", color="black", size=12, 
-                                            style=TextThemeStyle.TITLE_SMALL, weight="BOLD"),
-                                        
-                                            
+                                        Container(
+                                            content=Container(
+                                                content=Text("Reminder", size=32, color="BLACK",
+                                                            style=TextThemeStyle.TITLE_SMALL, weight="BOLD")
+                                            )
+                                        ),
+                                        #cl put here
+                                        Container(
+                                            content=cl
+                                        )
                                     ])
+                                    
                                 )
                             ])
                         )
-                    ]
-                        
-                    )
-                )
-            ])
-        )
+                ])
+        )  
+
+        
         exit_button_container = Container(
                 width=40,
                 height=40,
@@ -371,19 +420,18 @@ class SchedulePage:
                 content=IconButton(
                                     icons.EXIT_TO_APP_ROUNDED,
                                     icon_color="BLACK",
-                                    on_click=lambda _:page.go("/PatientHomePage/:email"))
+                                    on_click=lambda _:page.go(f"/PatientHomePage/{user_email}"))
             )
 
         stack = Stack([
             big_container,
-            cal_container,
             exit_button_container,
         ])
 
         
 
         return View(
-            "/SchedulePage",
+            "/SchedulePage/:email",
             controls=[
                 stack
             ]

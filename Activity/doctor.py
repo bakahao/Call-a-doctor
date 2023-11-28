@@ -1,7 +1,7 @@
 import json
 
 class Doctor:
-    def __init__(self, name=None, email=None, phoneNo=None, department=None, lenOfSvc=None, status="Online"):
+    def __init__(self, name=None, email=None, phoneNo=None, department=None, lenOfSvc=None, clinic=None,status="Online"):
         self.name = name
         self.role = 'Doctor'
         self.email = email
@@ -9,6 +9,7 @@ class Doctor:
         self.department = department
         self.lenOfSvc = lenOfSvc
         self.status = status
+        self.clinic = clinic
 
     def doctor_to_dict(self):
         return {
@@ -18,7 +19,8 @@ class Doctor:
             'phoneNo': self.phoneNo,
             'department': self.department,
             'lenOfSvc' : self.lenOfSvc,
-            'status' : self.status
+            'status' : self.status,
+            'clinic' : self.clinic
         }
     
     def dict_to_doctor(self, doctor_dict):
@@ -29,3 +31,4 @@ class Doctor:
         self.department = doctor_dict['department']
         self.lenOfSvc = doctor_dict['lenOfSvc']
         self.status = doctor_dict['status']
+        self.clinic = doctor_dict['clinic']

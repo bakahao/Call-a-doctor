@@ -18,11 +18,91 @@ class DoctorDetails:
 
             clinicD = getClinicDictData(params.uid)
             cli = Clinic()
-            cli.dict_to_clinic(clinicD)
+
+            try:
+                cli.dict_to_clinic(clinicD)
+            except TypeError:
+                print("Error: clinicD is None in ClinicDetails")
             
             clinic_uid = params.uid
             user_email = params.email
-            user_uid = getUserUIDByEmail(user_email)
+
+            doctorListLen = getClinicDoctorDataLenByUID(clinic_uid)
+            
+
+            cl = Column(
+                spacing=10,
+                height=500,
+                width=380,
+                scroll=ScrollMode.ALWAYS,
+            )
+            try:
+                for i in doctorListLen:
+                    try:
+                        doctor_uid = getClinicDoctorListUID[i]
+                    except:
+                        print("doctor_uid get error")
+
+                    cl.controls.append(Container(
+                                margin=margin.symmetric(horizontal=10),
+                                border_radius=20,
+                                bgcolor="#AFF7E5",
+                                content=Row([
+                                    Container(
+                                        width=100,
+                                        height=150,
+                                        content=Image(src=(os.getcwd()+"/Activity/assets/images/doctor.png"))
+                                    ),
+                                    Container(
+                                        margin=margin.symmetric(vertical=10),
+                                        content=Column([
+                                            Container(
+                                                content=Column([
+                                                    Container(
+                                                        content=Row([
+                                                            Container(
+                                                                content=Text("Name : ", color="BLACK", size=14, style=TextThemeStyle.TITLE_SMALL)
+                                                            ),
+                                                            Container(
+                                                                content=Text(getUserDictData(i)['name'], data=i, color="BLACK", size=14, style=TextThemeStyle.TITLE_SMALL)
+                                                            )
+                                                        ])
+                                                    ),
+                                                    Container(
+                                                        content=Row([
+                                                            Container(
+                                                                content=Text("Department : ", color="BLACK", size=14, style=TextThemeStyle.TITLE_SMALL)
+                                                            ),
+                                                            Container(
+                                                                content=Text(getUserDictData(i)['department'], data=i, color="BLACK", size=14, style=TextThemeStyle.TITLE_SMALL,width=130)
+                                                            )
+                                                        ])
+                                                    )
+                                                ])
+                                            ),
+                                            Container(
+                                                content=Row([
+                                                            Container(
+                                                                content=Text("Length of Service (years) : ", color="BLACK", size=14, style=TextThemeStyle.TITLE_SMALL)
+                                                            ),
+                                                            Container(
+                                                                content=Text(getUserDictData(i)['lenOfSvc'], data=i, color="BLACK", size=14, style=TextThemeStyle.TITLE_SMALL)
+                                                            )
+                                                        ])
+                                            )
+                                        ])
+                                    )
+                                ]
+                                    
+                                )
+                                                
+                        ))
+            except:
+                print("No doctor assign in current clinic")
+                    
+                 
+
+            
 
         
             big_container = Container(
@@ -51,12 +131,11 @@ class DoctorDetails:
                                     )
                                 )
                             ),
+                            Container(
+                                content=cl
+                            )
                     ])
             )
-            display_doctor_scroll_bar=Column(
-                            spacing=20,
-                            scroll=ScrollMode.HIDDEN,
-                    )
             
         
                 
