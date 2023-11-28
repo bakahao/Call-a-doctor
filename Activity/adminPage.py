@@ -9,25 +9,24 @@ class AdminPage:
         pass
 
     def view(self, page: Page, params: Params, basket: Basket):
-        page.title = "Login Page"
+        page.title = "Admin Page"
         page.window_width = 400
         page.window_height = 850
         page.window_resizable = False
         
 
         def getClinicButton():
-            if getClinicDictData(i)['status'] == 'pending':
-                    button_text = Text(getClinicDictData(i)['name'], data=i, color="BLACK")
+            if getClinicRDictData(i)['status'] == 'pending':
+                    button_text = Text(getClinicRDictData(i)['name'], data=i, color="BLACK")
                     cl.controls.append(Container(
                         content=ElevatedButton(bgcolor="#AFF7E5", width=400, on_click=lambda _:page.go(f"/ClinicRequestDetails/{button_text.data}"),
                                                content=Container(
                                                    width=350,
                                                    content=button_text
-                                               ))
-                                               
+                                               ))          
                     ))
             #page.go("/ClinicRequestDetails")
-            return getClinicDictData(i)
+            return getClinicRDictData(i)
  
         cl = Column(
                     spacing=10,
@@ -36,7 +35,7 @@ class AdminPage:
                     scroll=ScrollMode.AUTO,
                 )
         
-        clinicLength = getClinicDictDataLen()
+        clinicLength = getClinicRDictDataLen()
         
         try:
             for i in clinicLength:

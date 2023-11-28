@@ -2,6 +2,7 @@ import flet
 from flet import *
 from flet_route import Params, Basket
 import os
+from firebaseHelper import *
 
 
 class ChatList:
@@ -15,6 +16,49 @@ class ChatList:
         page.window_height=850
         page.window_resizable = False
         page.title=("Chat List Page")
+
+        email = params.email
+
+        cl = Column(
+                    spacing=10,
+                    width=380,
+                    scroll=ScrollMode.AUTO,
+                )
+        
+        try:
+            user_uid = getUserUIDByEmail(email)
+            pdict = getPatientRequestDoctorDictData(user_uid)
+            cdict = getClinicDictData(pdict['clinic_uid'])
+            ddict = getUserDictData(pdict['doctor_uid'])
+
+            if (pdict['status'] == "Approved"):
+                doctor_name = ddict['name']
+
+                rmd_text = Text(f"Dr. {doctor_name}", color="BLACK")
+                cl.controls.append(Container(
+                            content=ElevatedButton(
+                                    bgcolor="#AFF7E5",
+                                    on_click=lambda _:page.go(f"/PatientChatPage/{params.email}"),
+                                    content=Container(
+                                    width=400,
+                                    content=Row([
+                                         Container(
+                                              content=Icon(icons.ACCOUNT_CIRCLE_OUTLINED, color="BLACK"),
+                                         ),
+                                        Container(
+                                            content=rmd_text
+                                        )
+                                        
+                                    ]
+                                        
+                                        
+                                    )
+                            )
+                                )
+                        )
+                                                )
+        except:
+                print("Error in schedule")
 
         big_container = Container(
                 width=400,
@@ -47,31 +91,15 @@ class ChatList:
         chat_list_container = Column([
             Container(
                 width=350,
-                height=400,
                 #bgcolor="grey",
                 margin=margin.symmetric(vertical= 130, horizontal=20),
                 content=Column([
                     Container(
                         width=350,
-                        height=50,
+                        #height=100,
                         bgcolor="#AFF7E5",
-                        border_radius=30,
-                        content=Container(
-                            content=ElevatedButton(
-                                bgcolor="#AFF7E5",
-                                on_click=lambda _:page.go("/ChatPage"),
-                                content=Container(
-                                    width=400,
-                                    content=Row([
-                                        Icon(icons.ACCOUNT_CIRCLE_OUTLINED, color="BLACK"),
-                                        Text("Dr. Name", color="BLACK",),
-                                        
-                                    ]
-                                        
-                                        
-                                    )
-                            ))
-                        )
+                        border_radius=50,
+                        content=cl
 
                     )
                 ])
@@ -86,7 +114,7 @@ class ChatList:
                 content=IconButton(
                                     icons.EXIT_TO_APP_ROUNDED,
                                     icon_color="BLACK",
-                                    on_click=lambda _:page.go("/PatientHomePage/:email"))
+                                    on_click=lambda _:page.go(f"/PatientHomePage/{params.email}"))
             )
         
         stack = Stack([big_container,
@@ -95,7 +123,7 @@ class ChatList:
                     ])
 
         return View(
-            "/ChatList",
+            "/ChatList/:email",
             controls=[
                 stack
             ]

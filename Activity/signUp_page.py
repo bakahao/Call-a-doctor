@@ -24,11 +24,12 @@ class SignUpPage:
         email_textfield = TextField(label="Enter E-mail", color="BLACK")
         password_textfield = TextField(label="Enter password", color="BLACK")
         phone_textfield = TextField(label="Enter phone number", color="BLACK")
+        address_textfield = TextField(label="Enter address", color="BLACK")
 
         def close_dlg(e):
                 dlg_modal.open = False
                 page.go("/")
-                page.update
+                page.update()
 
 
         dlg_modal = AlertDialog(
@@ -49,18 +50,19 @@ class SignUpPage:
 
 
         def sign_up_clicked(e):
-            if not password_textfield.value or not email_textfield.value or not name_textfield.value or not phone_textfield.value:
+            if not password_textfield.value or not email_textfield.value or not name_textfield.value or not phone_textfield.value or not address_textfield.value:
                 #password_textfield.error_text = "Please enter your password"
-                print("ERROR MESSAGESSSS")
+                print("Empty text field detected")
             else:
                 email_value = email_textfield.value
                 password_value = password_textfield.value
                 phone_value = phone_textfield.value
                 name_value = name_textfield.value
+                address_value = address_textfield.value
                 role = "Patient"
 
                 uid = firebaseHelper.signup(email_value, password_value)
-                pat = Patient(name_value, email_value, phone_value, role)
+                pat = Patient(name_value, email_value, phone_value, address_value, role)
                 jsonPat = pat.patient_to_dict()
                 firebaseHelper.saveUserData(uid, jsonPat)
                 open_dlg_modal(e)
@@ -70,35 +72,43 @@ class SignUpPage:
         register = Container(
                     content=Column([
                         Container(
-                            content= 
-                                Column([
-                            Container(
-                                content=Column([
-                                    Container(
-                                        alignment=alignment.center,
-                                        content=Column([
+                            content=Column([
+                                 Container(
+                                      content=Column([
                                             Container(
-                                                margin=margin.symmetric(horizontal=10),
-                                                content=name_textfield
+                                                content=Column([
+                                                    Container(
+                                                        alignment=alignment.center,
+                                                        content=Column([
+                                                            Container(
+                                                                margin=margin.symmetric(horizontal=10),
+                                                                content=name_textfield
+                                                                ),
+                                                                Container(
+                                                                    alignment=alignment.center,
+                                                                    margin=margin.symmetric(horizontal= 10),
+                                                                    content=email_textfield
+                                                                )
+                                                            ])
+                                                        ),
+                                                            Container(
+                                                                margin=margin.symmetric(horizontal= 10),
+                                                                content=phone_textfield
+                                                        )
+                                                    ])
                                                 ),
                                                 Container(
-                                                    alignment=alignment.center,
                                                     margin=margin.symmetric(horizontal= 10),
-                                                    content=email_textfield
+                                                    content=password_textfield
                                                 )
                                             ])
-                                        ),
-                                            Container(
-                                                margin=margin.symmetric(horizontal= 10),
-                                                content=phone_textfield
-                                        )
-                                    ])
-                                ),
-                                Container(
-                                    margin=margin.symmetric(horizontal= 10),
-                                    content=password_textfield
-                                )
-                            ])
+                                 ),
+                                 Container(
+                                      margin=margin.symmetric(horizontal = 10),
+                                      content=address_textfield
+                                 )
+                            ]) 
+                                
                         ),
                         Container(
                             alignment=alignment.center,
