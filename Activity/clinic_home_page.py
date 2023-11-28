@@ -49,7 +49,8 @@ class ClinicHomePage:
             margin=margin.symmetric(vertical=35, horizontal=10),
             content=ft.IconButton(
                                 icons.EXIT_TO_APP_ROUNDED,
-                                icon_color="BLACK")
+                                icon_color="BLACK",
+                                on_click=lambda _:page.go("/"))
         )
 
         request_container = ft.Container(

@@ -13,7 +13,6 @@ class Clinic:
         self.clinicType = clinicType
         self.serviceType = serviceType
         self.email = email
-        #self.password = password
         self.role = role
         self.status = status #Approve/pending/reject
 
@@ -28,7 +27,6 @@ class Clinic:
             "clinicType" : self.clinicType,
             "serviceType" : self.serviceType,
             "email" : self.email,
-            #"password" : self.password,
             "role" : self.role,
             "status" : self.status
         }
@@ -45,3 +43,4 @@ class Clinic:
         self.email = cdict['email']
         self.role = cdict['role']
         self.status = cdict['status']
+        
